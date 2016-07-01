@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="mainPrimary">#3F51B5</color>
+    <color name="mainPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#4c42d6</color>
+    <color name="color1Primary">#6a1b9a</color>
+    <color name="color1PrimaryDark">#6a1b9a</color>
+    <color name="color1Accent">#6a1b9a</color>
+    <color name="mainBG">#efe4b0</color>
+    <color name="mainText">#FFF</color>
+    <color name="mainSky">#212121</color>
+    <color name="mainPurple">#6a1b9a</color>
+    <color name="bkCream">#e9e354</color>
+    <color name="borderCream">#dfd720</color>
+    <color name="bkC">#efc004</color>
+    <color name="textGray">#212121</color>
+    <color name="mainKolaPata">#eceabb</color>
+    <color name="mainWhite">#FFF</color>
+
+    <color name="main91">#c7c043</color>
+    <color name="main92">#c7b838</color>
+    <color name="main93">#cac55c</color>
+    <color name="main94">#d7d471</color>
+    <color name="main11">#513cae</color>
+    <color name="main21">#37248b</color>
+    <color name="main31">#705cca</color>
+    <color name="main41">#8d79e7</color>
+    <color name="bkDarkCream">#dfd5a5</color>
+
+
+
+</resources>

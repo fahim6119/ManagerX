@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/about"
+            android:title="About" />
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Send Feedback" />
+        <item
+            android:id="@+id/nav_rate"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Rate Us"/>
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/history"
+            android:title="History"/>
+        <item
+            android:id="@+id/nav_members"
+            android:icon="@drawable/group"
+            android:title="Members"/>
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/mail"
+                android:title="Tell a Friend" />
+        </menu>
+    </item>
+
+</menu>
