@@ -1,4 +1,4 @@
-package com.example.asus1.menuList;
+package arefin;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -18,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.asus1.menuList.R;
 
 import java.util.ArrayList;
 import java.util.Collections;

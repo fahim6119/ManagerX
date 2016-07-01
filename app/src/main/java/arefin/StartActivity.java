@@ -1,9 +1,11 @@
-package com.example.asus1.menuList;
+package arefin;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import com.example.asus1.menuList.R;
 
 public class StartActivity extends AppCompatActivity {
 

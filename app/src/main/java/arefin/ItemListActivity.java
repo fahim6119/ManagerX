@@ -1,4 +1,4 @@
-package com.example.asus1.menuList;
+package arefin;
 
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.asus1.menuList.R;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,11 +27,19 @@ import java.util.Set;
 public class ItemListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawer;
-
+    int itemNum;
+    int[] priceList;
+    String[] descList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_drawer);
+
+        Bundle b=this.getIntent().getExtras();
+        descList=b.getStringArray("descList");
+        itemNum=b.getInt("itemNum");
+        priceList=b.getIntArray("priceList");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_item);
         setSupportActionBar(toolbar);
 
@@ -73,6 +83,18 @@ public class ItemListActivity extends AppCompatActivity implements NavigationVie
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.nav_drawer, menu);
         return true;
+    }
+
+    public void retrieve_sharedArray()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        itemNum = preferences.getInt("itemNum", 0);
+        descList = new String[itemNum];
+        for(int i=0; i<itemNum; i++)
+            descList[i]=preferences.getString("desc_" + i, null);
+        priceList=new int[itemNum];
+        for(int i=0; i<itemNum; i++)
+            priceList[i]=Integer.parseInt(preferences.getString("price_" + i, null));
     }
 
 

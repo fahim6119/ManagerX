@@ -1,10 +1,13 @@
-package com.example.asus1.menuList;
+package arefin;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -12,6 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.asus1.menuList.R;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class MenuCreatorActivity extends AppCompatActivity {
 
@@ -68,18 +76,47 @@ public class MenuCreatorActivity extends AppCompatActivity {
     public void onClickNextButton(View v)
     {
         priceList=new int[itemNum];
+        String priceTemp,descTemp;
         for(int l=0; l<itemNum; l++) {
-            priceList[l]=Integer.parseInt(price[l].getText().toString());
+            priceTemp=price[l].getText().toString();
+            if(TextUtils.isEmpty(priceTemp))
+            {
+
+                price[l].setError("Please enter the price");
+                return;
+            }
+            else
+                priceList[l]=Integer.parseInt(priceTemp);
             Log.i("fahim","item "+l +" : price "+priceList[l]);
         }
 
         descList=new String[itemNum];
         for(int l=0; l<itemNum; l++) {
-            descList[l]= description[l].getText().toString();
+            descTemp=description[l].getText().toString();
+            if(TextUtils.isEmpty(descTemp))
+            {
+                description[l].setError("Please enter the details");
+                return;
+            }
+            else
+            descList[l]= descTemp;
             Log.i("fahim","item "+l +" : Description "+descList[l]);
         }
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("itemNum", itemNum);
+        for(int i=0;i<priceList.length; i++)
+            editor.putString("price_" + i, Integer.toString(priceList[i]));
 
-        //Intent createIntent = new Intent(MenuCreatorActivity.this, ItemListActivity.class);
-        //startActivity(createIntent);
+        for(int i=0;i<descList.length; i++)
+            editor.putString("desc_" + i, descList[i]);
+        editor.apply();
+        Bundle b=new Bundle();
+        b.putInt("itemNum",itemNum);
+        b.putIntArray("priceList",priceList);
+        b.putStringArray("descList",descList);
+        Intent createIntent = new Intent(MenuCreatorActivity.this, ItemListActivity.class);
+        createIntent.putExtras(b);
+        startActivity(createIntent);
     }
 }

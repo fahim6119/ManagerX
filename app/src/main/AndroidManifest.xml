@@ -8,22 +8,22 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".StartActivity">
+        <activity android:name="arefin.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateActivity" />
+        <activity android:name="arefin.CreateActivity" />
         <activity
-            android:name=".CollectorActivity"
+            android:name="arefin.CollectorActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ItemListActivity"
+            android:name="arefin.ItemListActivity"
             android:label="@string/title_activity_item_list"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MenuCreatorActivity"></activity>
+        <activity android:name="arefin.MenuCreatorActivity"></activity>
     </application>
 
 </manifest>

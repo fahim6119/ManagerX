@@ -1,0 +1,17 @@
+Things in SharedPreference
+
+String : 
+
+name
+date
+place
+
+int : 
+amount
+
+StringSet:
+users
+
+String Array :
+priceList
+descList

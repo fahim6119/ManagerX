@@ -1,9 +1,8 @@
-package com.example.asus1.menuList;
+package arefin;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,10 +11,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.asus1.menuList.R;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class CreateActivity extends AppCompatActivity {
 
     int amount;
-    String name,place;
+    String name,place,date;
     Button amountEnter;
     EditText amountVal,nameVal,locVal;
     TextView amountMsg,nameMsg,locMsg;
@@ -31,8 +35,13 @@ public class CreateActivity extends AppCompatActivity {
         nameVal=(EditText)findViewById(R.id.nameVal);
         amountEnter=(Button)findViewById(R.id.amountEnter);
         amount=100;
+        date= new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         name="@strings/database_name";
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        /*SharedPreferences prefs = getSharedPreferences("countPrefTwo", Context.MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("countPrefThree", Context.MODE_PRIVATE);
+        */
         final SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.commit();
@@ -45,6 +54,7 @@ public class CreateActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "For database "+ name+"Amount Set to "+amount,
                         Toast.LENGTH_LONG).show();
                 editor.putString("name", name);
+                editor.putString("date",date);
                 editor.putInt("amount",amount);
                 editor.putString("place",place);
                 editor.apply();
