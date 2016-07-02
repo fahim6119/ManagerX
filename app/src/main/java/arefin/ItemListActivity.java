@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -31,15 +32,18 @@ import android.widget.TextView;
 import com.example.arefin.menuList.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import arefin.dialogs.fragment.ListDialogFragment;
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;
 
 public class ItemListActivity extends AppCompatActivity implements
         IMultiChoiceListDialogListener {
-
+    boolean firstTimeStartup[];
+    int[][] selected;
     int itemNum;
     int[] priceList;
     String[] descList,users;
@@ -52,8 +56,9 @@ public class ItemListActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
-
         retrieve_sharedArray();
+        selected=new int[itemNum][itemNum];
+        firstTimeStartup=new boolean[itemNum];
         /*
         Bundle b=this.getIntent().getExtras();
         descList=b.getStringArray("descList");
@@ -104,6 +109,7 @@ public class ItemListActivity extends AppCompatActivity implements
         lp.setMargins(15, 20, 15, 20);
         menuItems=new Button[itemNum];
         menuLayout.removeAllViews();
+        Arrays.fill(firstTimeStartup,true);
         for(int l=0; l<itemNum; l++)
         {
             menuItems[l] = new Button(this);
@@ -122,14 +128,28 @@ public class ItemListActivity extends AppCompatActivity implements
                 @Override
                 public void onClick(View v) {
                     /////Do some job on button click
+                    int id=v.getId();
+                    ListDialogFragment frag=new arefin.dialogs.fragment.ListDialogFragment();
+                    if(firstTimeStartup[id]==true) {
 
-                    arefin.dialogs.fragment.ListDialogFragment
-                            .createBuilder(getBaseContext(), getSupportFragmentManager())
-                            .setTitle("Menu "+(v.getId()+1)+" Ordered by ")
-                            .setItems(users)
-                            .setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE)
-                            .setRequestCode(v.getId())
-                            .show();
+                        frag.createBuilder(getBaseContext(), getSupportFragmentManager())
+                                .setTitle("Menu "+(id+1)+" Ordered by ")
+                                .setItems(users)
+                                .setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE)
+                                .setRequestCode(id)
+                                .show();
+                    }
+                    else
+                    {
+                        frag.createBuilder(getBaseContext(), getSupportFragmentManager())
+                                .setTitle("Menu "+(id+1)+" Ordered by ")
+                                .setItems(users)
+                                .setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE)
+                                .setCheckedItems(selected[id])
+                                .setRequestCode(id)
+                                .show();
+
+                    }
                     Log.i("fahim","Button Pressed "+ v.getId());
                 }
             });
@@ -140,6 +160,10 @@ public class ItemListActivity extends AppCompatActivity implements
 
     @Override
     public void onListItemsSelected(CharSequence[] values, int[] selectedPositions, int requestCode) {
+        selected[requestCode]=selectedPositions;
+        firstTimeStartup[requestCode]=false;
+        for(int i=0;i<selectedPositions.length;i++)
+            Log.i("fahim","Selected "+i+" "+selected[0][i]);
         for(int i : selectedPositions){
             String selected=users[i];
             menuGenerator(requestCode,selected);

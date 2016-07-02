@@ -294,6 +294,8 @@ public class ListDialogFragment extends BaseDialogFragment {
         getArguments().putParcelable(ARG_CHECKED_ITEMS, checkedItems);
     }
 
+
+
     private CharSequence getPositiveButtonText() {
         return getArguments().getCharSequence(ARG_POSITIVE_BUTTON);
     }
