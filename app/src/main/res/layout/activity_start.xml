@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:text="Create New"
         android:textAllCaps="false"
+        android:id="@+id/createButton"
         android:background="@drawable/button_main"
         android:textSize="20sp"
         android:textColor="@color/mainText"

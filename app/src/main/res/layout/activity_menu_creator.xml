@@ -17,7 +17,8 @@
             android:orientation="horizontal"
             android:layout_below="@+id/itemNumText"
             android:layout_above="@+id/addMenuBtn"
-            android:weightSum="2">
+            android:weightSum="2"
+            android:id="@+id/linearLayout">
 
             <LinearLayout
                 android:id="@+id/desc_layout"

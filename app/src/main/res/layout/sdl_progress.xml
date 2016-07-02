@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/SDL.Layout.Progress">
 
-    <ProgressBar style="@style/SDL.Progress" />
+    <ProgressBar
+        android:id="@+id/sdl_progress"
+        style="@style/SDL.Progress" />
 
     <TextView
         android:id="@+id/sdl_message"

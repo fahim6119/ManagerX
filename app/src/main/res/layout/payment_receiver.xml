@@ -9,6 +9,7 @@
     android:paddingBottom="15dp">
 
     <RelativeLayout
+        android:id="@+id/title_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <TextView
