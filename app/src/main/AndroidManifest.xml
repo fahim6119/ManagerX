@@ -37,7 +37,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="arefin.CollectorActivity" />
         </activity>
-        <activity android:name="arefin.FragmentActivity" />
+        <activity android:name="arefin.FragmentActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="Orders">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="arefin.ItemListActivity" />
+        </activity>
         <activity android:name="arefin.CreditsActivity"></activity>
     </application>
 

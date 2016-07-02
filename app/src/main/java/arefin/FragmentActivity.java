@@ -6,29 +6,45 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.example.arefin.menuList.R;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 public class FragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
     DrawerLayout drawer;
     int itemNum;
     int[] priceList;
-    String[] descList;
+    String[] descList,users;
+    List<String> userlist;
+    ArrayList<ArrayList<String>> orderer;
+    LinearLayout.LayoutParams lp;
+    LinearLayout fragLayout;
+    Button[] menuOrders;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_drawer);
 
+        retrieve_sharedArray();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_item);
         setSupportActionBar(toolbar);
@@ -47,6 +63,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
+        ViewGenerator();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,17 +74,60 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         });
     }
 
+    public void ViewGenerator() {
+       fragLayout = (LinearLayout) findViewById(R.id.fragment_layout);
+        lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(5, 10, 5, 10);
+        int item=1;
+        int itemOrders=orderer.get(item).size();
+        menuOrders = new Button[itemOrders];
+        fragLayout.removeAllViews();
+        for (int l = 0; l < itemOrders; l++) {
+            menuOrders[l] = new Button(this);
+            menuOrders[l].setTextSize(15);
+            menuOrders[l].setLayoutParams(lp);
+            menuOrders[l].setId(l);
+            //menuOrders[l].setTextColor(getResources().getColor(R.color.textGray));
+            //menuOrders[l].setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.button_menu));
+
+            menuOrders[l].setTextColor(getResources().getColor(R.color.mainText));
+            menuOrders[l].setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.button_main));
+            menuOrders[l].setWidth(0);
+            menuOrders[l].setText(orderer.get(1).get(l));
+            Log.i("fahim","order for item 2 "+ orderer.get(1).get(l));
+            fragLayout.addView(menuOrders[l]);
+        }
+    }
 
     public void retrieve_sharedArray()
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         itemNum = preferences.getInt("itemNum", 0);
         descList = new String[itemNum];
+        orderer = new ArrayList<>();
         for(int i=0; i<itemNum; i++)
             descList[i]=preferences.getString("desc_" + i, null);
         priceList=new int[itemNum];
         for(int i=0; i<itemNum; i++)
             priceList[i]=Integer.parseInt(preferences.getString("price_" + i, null));
+
+        if (preferences.contains("users")) {
+            Set<String> set = preferences.getStringSet("users", null);
+            userlist = new ArrayList<String>(set);
+            Collections.sort(userlist, String.CASE_INSENSITIVE_ORDER);
+            users=new String[userlist.size()];
+            for (int i = 0; i < userlist.size(); i++) {
+                users[i]=userlist.get(i);
+            }
+        }
+
+        for(int l=0;l<itemNum;l++)
+        {
+            Set<String> set = preferences.getStringSet("menu_"+l, null);
+            orderer.add(new ArrayList<String>(set));
+            Collections.sort(orderer.get(l), String.CASE_INSENSITIVE_ORDER);
+        }
+
     }
 
 

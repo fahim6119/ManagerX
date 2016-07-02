@@ -1,17 +1,19 @@
 Things in SharedPreference
 
 String : 
-
 name
 date
 place
 
 int : 
 amount
+itemNum
 
 StringSet:
 users
+menu_X
+
 
 String Array :
-priceList
-descList
+price_X
+desc_X
