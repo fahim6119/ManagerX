@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.example.asus1.menuList.R;
+import com.example.arefin.menuList.R;
 
 public class StartActivity extends AppCompatActivity {
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.asus1.menuList">
+    package="com.example.arefin.menuList">
 
     <application
         android:allowBackup="true"
@@ -15,15 +15,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="arefin.CreateActivity" />
+
+        <activity android:name="arefin.CreateActivity">
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="arefin.StartActivity" />
+        </activity>
+
         <activity
-            android:name="arefin.CollectorActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name="arefin.CollectorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="arefin.StartActivity" />
+        </activity>
+
         <activity
             android:name="arefin.ItemListActivity"
-            android:label="@string/title_activity_item_list"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="arefin.MenuCreatorActivity"></activity>
+            android:label="@string/title_activity_item_list">
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="arefin.MenuCreatorActivity" />
+        </activity>
+
+        <activity android:name="arefin.MenuCreatorActivity">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="arefin.CollectorActivity" />
+        </activity>
+
+        <activity android:name="arefin.FragmentActivity"></activity>
     </application>
 
 </manifest>

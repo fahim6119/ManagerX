@@ -3,23 +3,18 @@ package arefin;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.example.asus1.menuList.R;
-
-import java.util.HashSet;
-import java.util.Set;
+import com.example.arefin.menuList.R;
 
 public class MenuCreatorActivity extends AppCompatActivity {
 
@@ -35,6 +30,9 @@ public class MenuCreatorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_creator);
+
+        getSupportActionBar().setTitle("Menu Items");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         itemNumText=(EditText) findViewById(R.id.itemNumText);
         itemNumButton=(Button) findViewById(R.id.ItemNumButton);
