@@ -22,7 +22,7 @@ public class StartActivity extends AppCompatActivity {
     }
     public void onClickOldButton(View v){
        // Intent oldIntent = new Intent(StartActivity.this, CollectorActivity.class);
-        Intent oldIntent = new Intent(StartActivity.this, MenuCreatorActivity.class);
+        Intent oldIntent = new Intent(StartActivity.this, ItemListActivity.class);
         startActivity(oldIntent);
     }
 

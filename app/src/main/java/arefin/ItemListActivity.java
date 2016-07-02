@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,8 +19,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -32,57 +35,101 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class ItemListActivity extends AppCompatActivity{
+import arefin.dialogs.iface.IMultiChoiceListDialogListener;
+
+public class ItemListActivity extends AppCompatActivity implements
+        IMultiChoiceListDialogListener {
 
     int itemNum;
     int[] priceList;
-    String[] descList;
+    String[] descList,users;
     LinearLayout.LayoutParams lp;
     LinearLayout menuLayout;
-    TextView[] menuItems;
+    Button[] menuItems;
+    List<String> userlist;
+    ArrayList<ArrayList<String>> orderer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
+        retrieve_sharedArray();
+        /*
         Bundle b=this.getIntent().getExtras();
         descList=b.getStringArray("descList");
         itemNum=b.getInt("itemNum");
-        priceList=b.getIntArray("priceList");
+        priceList=b.getIntArray("priceList"); */
+
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (preferences.contains("users")) {
             Set<String> set = preferences.getStringSet("users", null);
-            List<String> list = new ArrayList<String>(set);
-            Collections.sort(list, String.CASE_INSENSITIVE_ORDER);
-
-            for (int i = 0; i < list.size(); i++) {
-                Log.i("fahim", i + " " + list.get(i));
+            userlist = new ArrayList<String>(set);
+            Collections.sort(userlist, String.CASE_INSENSITIVE_ORDER);
+            users=new String[userlist.size()];
+            for (int i = 0; i < userlist.size(); i++) {
+                users[i]=userlist.get(i);
+                Log.i("fahim", i + " " + users[i]);
             }
         }
+
         getSupportActionBar().setTitle("Set Orders");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ViewGenerator();
 
+        orderer= new ArrayList<>();
+        for( int i = 0; i < itemNum; i++) {
+            orderer.add(new ArrayList<String>());
+        }
+
+    }
+
+
+    public void retrieve_sharedArray()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        itemNum = preferences.getInt("itemNum", 0);
+        descList = new String[itemNum];
+        for(int i=0; i<itemNum; i++)
+            descList[i]=preferences.getString("desc_" + i, null);
+        priceList=new int[itemNum];
+        for(int i=0; i<itemNum; i++)
+            priceList[i]=Integer.parseInt(preferences.getString("price_" + i, null));
     }
 
     public void ViewGenerator()
     {
         menuLayout = (LinearLayout) findViewById(R.id.menu_layout);
-        lp = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.WRAP_CONTENT,    LinearLayout.LayoutParams.WRAP_CONTENT);
-        menuItems=new TextView[itemNum];
+        lp = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT,    LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(15, 20, 15, 20);
+        menuItems=new Button[itemNum];
         menuLayout.removeAllViews();
         for(int l=0; l<itemNum; l++)
         {
-            menuItems[l] = new TextView(this);
+            menuItems[l] = new Button(this);
             menuItems[l].setTextSize(15);
             menuItems[l].setLayoutParams(lp);
             menuItems[l].setId(l);
+            //menuItems[l].setTextColor(getResources().getColor(R.color.textGray));
+            //menuItems[l].setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.button_menu));
+
+            menuItems[l].setTextColor(getResources().getColor(R.color.mainText));
+            menuItems[l].setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.button_main));
+
+            menuItems[l].setWidth(0);
             menuItems[l].setText("Item " +(l + 1)+" Price "+priceList[l] );
             menuItems[l].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     /////Do some job on button click
+
+                    arefin.dialogs.fragment.ListDialogFragment
+                            .createBuilder(getBaseContext(), getSupportFragmentManager())
+                            .setTitle("Menu "+(v.getId()+1)+" Ordered by ")
+                            .setItems(users)
+                            .setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE)
+                            .setRequestCode(v.getId())
+                            .show();
                     Log.i("fahim","Button Pressed "+ v.getId());
                 }
             });
@@ -91,12 +138,18 @@ public class ItemListActivity extends AppCompatActivity{
     }
 
 
-
-    public void menuGenerator(View v)
-    {
-        int btnId=v.getId();
-
+    @Override
+    public void onListItemsSelected(CharSequence[] values, int[] selectedPositions, int requestCode) {
+        for(int i : selectedPositions){
+            String selected=users[i];
+            menuGenerator(requestCode,selected);
+        }
     }
 
 
+    public void menuGenerator(int item, String name)
+    {
+        orderer.get(item).add(name);
+        Log.i("fahim","Item "+item+ " name "+name);
+    }
 }

@@ -15,35 +15,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name="arefin.CreateActivity">
-            <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="arefin.StartActivity" />
-        </activity>
-
-        <activity
-            android:name="arefin.CollectorActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="arefin.StartActivity" />
         </activity>
-
+        <activity android:name="arefin.CollectorActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="arefin.StartActivity" />
+        </activity>
         <activity
             android:name="arefin.ItemListActivity"
             android:label="@string/title_activity_item_list">
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="arefin.MenuCreatorActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="arefin.MenuCreatorActivity" />
         </activity>
-
         <activity android:name="arefin.MenuCreatorActivity">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="arefin.CollectorActivity" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="arefin.CollectorActivity" />
         </activity>
-
-        <activity android:name="arefin.FragmentActivity"></activity>
+        <activity android:name="arefin.FragmentActivity" />
+        <activity android:name="arefin.CreditsActivity"></activity>
     </application>
 
 </manifest>
