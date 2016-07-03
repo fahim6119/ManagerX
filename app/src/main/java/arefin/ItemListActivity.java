@@ -35,7 +35,7 @@ public class ItemListActivity extends AppCompatActivity implements
     LinearLayout.LayoutParams lp;
     LinearLayout menuLayout;
     Button[] menuItems;
-    List<String> userlist;
+    static List<String> userlist;
     ArrayList<ArrayList<String>> orderer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

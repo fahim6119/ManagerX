@@ -6,8 +6,12 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -36,9 +40,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
     String[] descList,users;
     List<String> userlist;
     ArrayList<ArrayList<String>> orderer;
-    LinearLayout.LayoutParams lp;
-    LinearLayout fragLayout;
-    Button[] menuOrders;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,8 +65,15 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
-        ViewGenerator();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        if (viewPager != null) {
+            setupViewPager(viewPager);
+        }
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,30 +83,6 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         });
     }
 
-    public void ViewGenerator() {
-       fragLayout = (LinearLayout) findViewById(R.id.fragment_layout);
-        lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(5, 10, 5, 10);
-        int item=1;
-        int itemOrders=orderer.get(item).size();
-        menuOrders = new Button[itemOrders];
-        fragLayout.removeAllViews();
-        for (int l = 0; l < itemOrders; l++) {
-            menuOrders[l] = new Button(this);
-            menuOrders[l].setTextSize(15);
-            menuOrders[l].setLayoutParams(lp);
-            menuOrders[l].setId(l);
-            //menuOrders[l].setTextColor(getResources().getColor(R.color.textGray));
-            //menuOrders[l].setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.button_menu));
-
-            menuOrders[l].setTextColor(getResources().getColor(R.color.mainText));
-            menuOrders[l].setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.button_main));
-            menuOrders[l].setWidth(0);
-            menuOrders[l].setText(orderer.get(1).get(l));
-            Log.i("fahim","order for item 2 "+ orderer.get(1).get(l));
-            fragLayout.addView(menuOrders[l]);
-        }
-    }
 
     public void retrieve_sharedArray()
     {
@@ -202,5 +187,44 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
     }
 
 
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragments = new ArrayList<>();
+        private final List<String> mFragmentTitles = new ArrayList<>();
+
+        public Adapter(android.support.v4.app.FragmentManager fm) {
+            super(fm);
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragments.add(fragment);
+            mFragmentTitles.add(title);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitles.get(position);
+        }
+    }
+
+
+    private void setupViewPager(ViewPager viewPager) {
+        Adapter adapter = new Adapter(getSupportFragmentManager());
+        for(int i=0;i<itemNum;i++)
+            adapter.addFragment(new CollectorFragment(),"Item"+ (i+1));
+        //adapter.addFragment(new FoodItemFragment(), "Category 1");
+        //adapter.addFragment(new CheeseListFragment(), "Category 2");
+        //adapter.addFragment(new CheeseListFragment(), "Category 3");
+        viewPager.setAdapter(adapter);
+    }
 
 }
