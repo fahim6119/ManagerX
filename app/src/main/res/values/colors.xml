@@ -10,13 +10,12 @@
     <color name="color1Accent">#6a1b9a</color>
     <color name="mainBG">#efe4b0</color>
     <color name="mainText1">#FFF</color>
-    <color name="mainSky1">#212121</color>
+    <color name="primaryColor1">#212121</color>
     <color name="mainText">#212121</color>
-    <color name="mainSky">#efc004</color>
+    <color name="primaryColor">#efc004</color>
     <color name="mainPurple">#6a1b9a</color>
     <color name="bkCream">#e9e354</color>
     <color name="borderCream">#dfd720</color>
-    <color name="bkC">#efc004</color>
     <color name="textGray">#212121</color>
     <color name="mainKolaPata">#eceabb</color>
     <color name="mainWhite">#FFF</color>

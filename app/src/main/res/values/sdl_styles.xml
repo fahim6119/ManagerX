@@ -112,7 +112,7 @@
     <style name="SDL.TextView.Title">
         <item name="android:textSize">20sp</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:background">@color/mainSky</item>
+        <item name="android:background">@color/primaryColor</item>
         <item name="android:textColor">?sdlTextPrimaryColor</item>
         <!-- paddings set in code -->
     </style>

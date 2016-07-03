@@ -9,14 +9,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +23,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.example.arefin.menuList.R;
 
-public class CollectorFragment extends Fragment {
+public class OrderFragment extends Fragment {
     ListView listView;
     Button ClickMe;
     String uName;
@@ -38,12 +35,12 @@ public class CollectorFragment extends Fragment {
     String[] descList,users;
     List<String> userlist;
     ArrayList<ArrayList<String>> orderer;
-    public static CollectorFragment newInstance() {
-        CollectorFragment cFragment = new CollectorFragment();
+    public static OrderFragment newInstance() {
+        OrderFragment cFragment = new OrderFragment();
         return cFragment;
     }
 
-    public CollectorFragment() {
+    public OrderFragment() {
     }
 
     //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS

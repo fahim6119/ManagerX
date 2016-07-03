@@ -1,7 +1,9 @@
 package arefin;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -9,7 +11,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -17,17 +18,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
 
 import com.example.arefin.menuList.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -60,6 +57,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        //navigationView.setItemIconTintList(null);
 
         final android.support.v7.app.ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
@@ -161,24 +159,43 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         int id = item.getItemId();
 
         FragmentManager fragmentManager=getFragmentManager();
-        if (id == R.id.nav_about) {
-            //fragmentManager.beginTransaction().replace(R.id.content_frame,new FirstFragment()).commit();
-        } else if (id == R.id.nav_feedback) {
-            // fragmentManager.beginTransaction().replace(R.id.content_frame,new SecondFragment()).commit();
-
-        } else if (id == R.id.nav_rate) {
-            // fragmentManager.beginTransaction().replace(R.id.content_frame,new ThirdFragment()).commit();
-
-        }else if (id == R.id.nav_history) {
+        if (id == R.id.nav_about)
+        {
+            Intent createIntent = new Intent(FragmentActivity.this, CreditsActivity.class);
+            startActivity(createIntent);
+        }
+        else if (id == R.id.nav_feedback) {
+            drawer.closeDrawers();
+            Uri uri = Uri.parse("https://fahim6119.wordpress.com/contact/"); // missing 'http://' will cause crashed
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        }
+        else if (id == R.id.nav_exit) {
+            finish();
+        }
+        else if (id == R.id.nav_history) {
 
         }
-        else if (id == R.id.nav_members) {
-
+        else if (id == R.id.nav_create) {
+            Intent createIntent = new Intent(FragmentActivity.this, CreateActivity.class);
+            startActivity(createIntent);
         }
-        else if (id == R.id.nav_share) {
+        else if (id == R.id.nav_members)
+        {
+            Intent createIntent = new Intent(FragmentActivity.this, CollectorActivity.class);
+            startActivity(createIntent);
+        }
 
-        } else if (id == R.id.nav_send) {
+        else if (id == R.id.nav_items)
+        {
+            Intent createIntent = new Intent(FragmentActivity.this, MenuCreatorActivity.class);
+            startActivity(createIntent);
+        }
 
+        else if (id == R.id.nav_order)
+        {
+            Intent createIntent = new Intent(FragmentActivity.this, ItemListActivity.class);
+            startActivity(createIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -220,10 +237,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
         for(int i=0;i<itemNum;i++)
-            adapter.addFragment(new CollectorFragment(),"Item"+ (i+1));
-        //adapter.addFragment(new FoodItemFragment(), "Category 1");
-        //adapter.addFragment(new CheeseListFragment(), "Category 2");
-        //adapter.addFragment(new CheeseListFragment(), "Category 3");
+            adapter.addFragment(new OrderFragment(),"Item"+ (i+1));
         viewPager.setAdapter(adapter);
     }
 

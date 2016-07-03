@@ -32,7 +32,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu_creator);
 
         getSupportActionBar().setTitle("Menu Items");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         itemNumText=(EditText) findViewById(R.id.itemNumText);
         itemNumButton=(Button) findViewById(R.id.ItemNumButton);

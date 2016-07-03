@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -61,7 +60,9 @@ public class CollectorActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
         listView.setAdapter(adapter);
         clickCounter=0;
+        getSupportActionBar().setTitle("Attendees");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 
     public void updateList(String uName)
@@ -91,7 +92,7 @@ public class CollectorActivity extends AppCompatActivity {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.payment_receiver, null);
+        View dialogView = inflater.inflate(R.layout.dialog_payment_receiver, null);
         dialog.setContentView(dialogView);
 
         dialog.setCancelable(true);

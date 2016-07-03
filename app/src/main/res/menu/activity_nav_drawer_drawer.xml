@@ -2,6 +2,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:title="Edit Orders">
+        <menu>
+            <item
+                android:id="@+id/nav_create"
+                android:icon="@drawable/ic_create"
+                android:title="Create New" />
+            <item
+                android:id="@+id/nav_members"
+                android:icon="@drawable/group"
+                android:title="Attendees" />
+            <item
+                android:id="@+id/nav_items"
+                android:icon="@drawable/ic_restaurant"
+                android:title="Menu Items" />
+
+            <item
+                android:id="@+id/nav_order"
+                android:icon="@drawable/ic_order"
+                android:title="Edit Orders" />
+
+        </menu>
+    </item>
+
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_about"
@@ -11,31 +34,17 @@
             android:id="@+id/nav_feedback"
             android:icon="@drawable/ic_menu_send"
             android:title="Send Feedback" />
-        <item
-            android:id="@+id/nav_rate"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Rate Us"/>
+
         <item
             android:id="@+id/nav_history"
             android:icon="@drawable/history"
             android:title="History"/>
-        <item
-            android:id="@+id/nav_members"
-            android:icon="@drawable/group"
-            android:title="Members"/>
-    </group>
 
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/mail"
-                android:title="Tell a Friend" />
-        </menu>
-    </item>
+        <item
+            android:id="@+id/nav_exit"
+            android:icon="@drawable/ic_exit"
+            android:title="Exit"/>
+
+    </group>
 
 </menu>
