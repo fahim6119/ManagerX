@@ -92,7 +92,29 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
     }
 
 
+    @Override
+    public void onBackPressed()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
 
+        for(int i=0;i<itemNum;i++)
+        {
+            ArrayList<Integer> selection=fragments[i].backUpSelected();
+            //When a fragment hasn't been opened, don't change the current preference
+            StringBuilder str = new StringBuilder();
+            for (int k = 0; k < selection.size(); k++) {
+                str.append(selection.get(k)).append(",");
+            }
+            editor.putString("selected_"+i, str.toString());
+            editor.apply();
+        }
+        Intent i = new Intent(FragmentActivity.this, StartActivity.class);
+        // set the new task and clear flags
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+        finish();
+    }
 
     public void retrieve_sharedArray()
     {
@@ -129,13 +151,9 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
     public void onResume()
     {
         super.onResume();
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onRestart()
-    {
-        super.onRestart();
+        Log.i("FahimOrders","Resume");
+        for(int i=0;i<itemNum;i++)
+            fragments[i].updateView(i);
         adapter.notifyDataSetChanged();
     }
 

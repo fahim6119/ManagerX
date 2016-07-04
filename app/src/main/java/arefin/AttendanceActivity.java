@@ -50,7 +50,6 @@ public class AttendanceActivity extends AppCompatActivity {
         {
             Set<String> set = preferences.getStringSet("users", null);
             listItems=new ArrayList<String>(set);
-            Collections.sort(listItems, String.CASE_INSENSITIVE_ORDER);
             String users[]=new String[listItems.size()];
             for (int i = 0; i < listItems.size(); i++) {
                 users[i]=listItems.get(i);
@@ -165,6 +164,12 @@ public class AttendanceActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    public void sortList()
+    {
+        Collections.sort(listItems, String.CASE_INSENSITIVE_ORDER);
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -184,9 +189,14 @@ public class AttendanceActivity extends AppCompatActivity {
             finish();
         }
 
-        if (id == R.id.action_add)
+        else if (id == R.id.action_add)
         {
             getAttendance();
+        }
+
+        else if (id == R.id.action_sort)
+        {
+            sortList();
         }
 
         return super.onOptionsItemSelected(item);

@@ -13,4 +13,11 @@
         android:icon="@drawable/ic_add_member"
         android:title="Add Member"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_sort"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_sort"
+        android:title="Sort Alphabetically"
+        app:showAsAction="ifRoom" />
 </menu>
