@@ -1,0 +1,15 @@
+Version 0.1 : 8:25 AM 04-Jul-16 
+-Editing orders and attendees
+-Fragmented Lists
+-Adding and Removing orders
+-Editing Attendee name
+-Bug fixed (Caused by using the StringSet returned by SharedPreference)
+
+Upcoming Features :
+- Re-entrant Activities
+- Multiple Profiles
+- History
+- Attendee profile
+
+
+

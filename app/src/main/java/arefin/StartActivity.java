@@ -21,10 +21,8 @@ public class StartActivity extends AppCompatActivity {
         startActivity(createIntent);
     }
     public void onClickOldButton(View v){
-       // Intent oldIntent = new Intent(StartActivity.this, AttendanceActivity.class);
+        //Intent oldIntent = new Intent(StartActivity.this, AttendanceActivity.class);
         Intent oldIntent = new Intent(StartActivity.this, FragmentActivity.class);
         startActivity(oldIntent);
     }
-
-
 }

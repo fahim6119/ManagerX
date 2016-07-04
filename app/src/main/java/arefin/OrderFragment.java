@@ -68,6 +68,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         rootView = inflater.inflate(R.layout.collection_list, container, false);
         retrieve_sharedArray();
         listOrders=getArguments().getStringArrayList("orders");
+        //update();
         orders=new String[listOrders.size()];
         orders = listOrders.toArray(orders);
         frag_id=getArguments().getInt("fragId");
@@ -88,12 +89,6 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         return rootView;
 
     }
-
-    public void dummy()
-    {
-        Log.i("fahimOrder","Call R");
-    }
-
 
     public void onListItemsSelected(CharSequence[] values, int[] selectedPositions, int choice) {
 
@@ -138,13 +133,31 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /*
+    Created for debugging purposes     */
+    public void update()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        Set<String> userSet = preferences.getStringSet("users", null);
+        Set<String> newUserSet=new HashSet<String>();
+        newUserSet.addAll(userSet);
+        newUserSet.addAll(listOrders);
+        Log.i("Fahim","size "+newUserSet.size());
+        editor.putStringSet("users",newUserSet );
+        editor.apply();
+    }
+
+
     public void add_member()
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
         Set<String> userSet = preferences.getStringSet("users", null);
-
+        Set<String> newUserSet=new HashSet<String>();
+        newUserSet.addAll(userSet);
         //updateUserList
         userlist = new ArrayList<String>(userSet);
+
         users=new String[userlist.size()];
         for (int i = 0; i < userlist.size(); i++) {
             users[i]=userlist.get(i);
@@ -153,8 +166,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         //Find Remaining Users
         Set<String> orderSet = new HashSet<String>();
         orderSet.addAll(listOrders);
-        userSet.removeAll(orderSet);
-        ArrayList<String> newUserlist = new ArrayList<String>(userSet);
+        newUserSet.removeAll(orderSet);
+        ArrayList<String> newUserlist = new ArrayList<String>(newUserSet);
         Collections.sort(newUserlist, String.CASE_INSENSITIVE_ORDER);
         newUsers=new String[newUserlist.size()];
         for (int i = 0; i < newUserlist.size(); i++) {
@@ -209,6 +222,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         //Update Shared Preference
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = preferences.edit();
+
         Set<String> set = new HashSet<String>();
         set.addAll(listOrders);
         editor.putStringSet("menu_" + frag_id, set);
@@ -232,16 +246,6 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         priceList=new int[itemNum];
         for(int i=0; i<itemNum; i++)
             priceList[i]=Integer.parseInt(preferences.getString("price_" + i, null));
-
-        if (preferences.contains("users")) {
-            Set<String> set = preferences.getStringSet("users", null);
-            userlist = new ArrayList<String>(set);
-            Collections.sort(userlist, String.CASE_INSENSITIVE_ORDER);
-            users=new String[userlist.size()];
-            for (int i = 0; i < userlist.size(); i++) {
-                users[i]=userlist.get(i);
-            }
-        }
 
         for(int l=0;l<itemNum;l++)
         {

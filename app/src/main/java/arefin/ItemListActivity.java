@@ -179,7 +179,7 @@ public class ItemListActivity extends AppCompatActivity implements
             }
             editor.putString("selected_"+i, str.toString()); */
         }
-        editor.commit();
+        editor.apply();
 
         Intent createIntent = new Intent(ItemListActivity.this,FragmentActivity.class);
        // createIntent.putExtras(b);

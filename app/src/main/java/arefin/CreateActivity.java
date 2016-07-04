@@ -44,7 +44,7 @@ public class CreateActivity extends AppCompatActivity {
         */
         final SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
-        editor.commit();
+        editor.apply();
         amountEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
