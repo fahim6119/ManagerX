@@ -18,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,14 +30,31 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class FragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
+import arefin.dialogs.iface.IMultiChoiceListDialogListener;
+
+public class FragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,IMultiChoiceListDialogListener {
 
     DrawerLayout drawer;
     int itemNum;
     int[] priceList;
     String[] descList,users;
     List<String> userlist;
-    ArrayList<ArrayList<String>> orderer;
+    public ArrayList<ArrayList<String>> orderer;
+    OrderFragment fragments[];
+    int[] fragment_id;
+    Adapter adapter;
+
+
+    @Override
+    public void onListItemsSelected(CharSequence[] values, int[] selectedPositions, int choice) {
+
+        Log.i("fahimOrder","Items Selected ");
+        int check,frag;
+        check=choice%10;
+        frag=(choice-check)/10;
+        fragments[frag].onListItemsSelected(values,selectedPositions,check);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +62,8 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         setContentView(R.layout.activity_nav_drawer);
 
         retrieve_sharedArray();
-
+        fragments=new OrderFragment[itemNum];
+        fragment_id=new int[itemNum];
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_item);
         setSupportActionBar(toolbar);
 
@@ -70,16 +89,9 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
+
+
 
 
     public void retrieve_sharedArray()
@@ -111,6 +123,20 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
             Collections.sort(orderer.get(l), String.CASE_INSENSITIVE_ORDER);
         }
 
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -182,7 +208,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         }
         else if (id == R.id.nav_members)
         {
-            Intent createIntent = new Intent(FragmentActivity.this, CollectorActivity.class);
+            Intent createIntent = new Intent(FragmentActivity.this, AttendanceActivity.class);
             startActivity(createIntent);
         }
 
@@ -235,9 +261,15 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
 
 
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getSupportFragmentManager());
-        for(int i=0;i<itemNum;i++)
-            adapter.addFragment(new OrderFragment(),"Item"+ (i+1));
+        adapter = new Adapter(getSupportFragmentManager());
+        for(int i=0;i<itemNum;i++) {
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList("orders", orderer.get(i));
+            bundle.putInt("fragId",i);
+            fragments[i]=new OrderFragment();
+            adapter.addFragment(fragments[i], "Item" + (i + 1));
+            adapter.getItem(i).setArguments(bundle);
+        }
         viewPager.setAdapter(adapter);
     }
 

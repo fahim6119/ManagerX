@@ -85,6 +85,7 @@ public class ItemListActivity extends AppCompatActivity implements
         priceList=new int[itemNum];
         for(int i=0; i<itemNum; i++)
             priceList[i]=Integer.parseInt(preferences.getString("price_" + i, null));
+
     }
 
     public void ViewGenerator()
@@ -170,6 +171,13 @@ public class ItemListActivity extends AppCompatActivity implements
             Set<String> set = new HashSet<String>();
             set.addAll(orderer.get(i));
             editor.putStringSet("menu_" + i, set);
+
+            /*
+            StringBuilder str = new StringBuilder();
+            for (int k = 0; k < selected[i].length; k++) {
+                str.append(selected[i][k]).append(",");
+            }
+            editor.putString("selected_"+i, str.toString()); */
         }
         editor.commit();
 

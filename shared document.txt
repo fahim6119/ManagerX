@@ -17,3 +17,4 @@ menu_X
 String Array :
 price_X
 desc_X
+selected_X =selected_1 means array indexes selected for menu item 1

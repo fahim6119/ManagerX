@@ -1,0 +1,9 @@
+Upcoming Features :
+- Re-entrant Activities
+- Multiple Profiles
+- History
+
+Added : 
+Fragment Lists
+Editing orders and attendees midway
+Adding and Removing orders

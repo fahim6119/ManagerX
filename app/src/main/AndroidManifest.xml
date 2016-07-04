@@ -20,7 +20,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="arefin.StartActivity" />
         </activity>
-        <activity android:name="arefin.CollectorActivity">
+        <activity android:name="arefin.AttendanceActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="arefin.StartActivity" />
@@ -35,7 +35,7 @@
         <activity android:name="arefin.MenuCreatorActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="arefin.CollectorActivity" />
+                android:value="arefin.AttendanceActivity" />
         </activity>
         <activity android:name="arefin.FragmentActivity"
             android:screenOrientation="portrait"

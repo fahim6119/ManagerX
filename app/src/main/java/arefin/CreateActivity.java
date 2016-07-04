@@ -51,14 +51,14 @@ public class CreateActivity extends AppCompatActivity {
                 amount = Integer.parseInt(amountVal.getText().toString());
                 name=nameVal.getText().toString();
                 place=locVal.getText().toString();
-                Toast.makeText(getBaseContext(), "For database "+ name+"Amount Set to "+amount,
+                Toast.makeText(getBaseContext(), name+" Event Created",
                         Toast.LENGTH_LONG).show();
                 editor.putString("name", name);
                 editor.putString("date",date);
                 editor.putInt("amount",amount);
                 editor.putString("place",place);
                 editor.apply();
-                Intent createIntent = new Intent(CreateActivity.this, CollectorActivity.class);
+                Intent createIntent = new Intent(CreateActivity.this, AttendanceActivity.class);
                 startActivity(createIntent);
                 finish();
             }

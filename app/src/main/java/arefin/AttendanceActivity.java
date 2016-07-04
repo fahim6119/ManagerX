@@ -26,13 +26,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CollectorActivity extends AppCompatActivity {
+public class AttendanceActivity extends AppCompatActivity {
 
     ListView listView;
-    Button ClickMe;
-    String uName;
-    TextView totalCollection;
-
 
     //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
     ArrayList<String> listItems=new ArrayList<String>();
@@ -61,7 +57,7 @@ public class CollectorActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
         clickCounter=0;
         getSupportActionBar().setTitle("Attendees");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
@@ -70,7 +66,7 @@ public class CollectorActivity extends AppCompatActivity {
         clickCounter++;
         listItems.add(uName);
         adapter.notifyDataSetChanged();
-        Toast.makeText(getBaseContext(), "payment from "+ uName +" accepted",
+        Toast.makeText(getBaseContext(), uName +" is attending",
                 Toast.LENGTH_LONG).show();
     }
 
@@ -82,7 +78,7 @@ public class CollectorActivity extends AppCompatActivity {
         set.addAll(listItems);
         editor.putStringSet("users",set );
         editor.commit();
-        Intent createIntent = new Intent(CollectorActivity.this, MenuCreatorActivity.class);
+        Intent createIntent = new Intent(AttendanceActivity.this, MenuCreatorActivity.class);
         startActivity(createIntent);
         finish();
     }
