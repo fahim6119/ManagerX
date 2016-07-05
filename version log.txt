@@ -10,12 +10,13 @@ Version 0.2 : 1:14 AM 05-Jul-16
 -Re-entrant activities
 -Sort Option for attendee List
 
+Version 0.3 : 5:44 AM 05-Jul-16
+-History automatically Exported to SD Card when creating new event
+
 
 Unimplemented Features :
 - Multiple Events
-- History or Send to Google Notes
 - Attendee profile (How much due, How much Paid)
-- Add finish option to write to History
 - Share APK
 
 

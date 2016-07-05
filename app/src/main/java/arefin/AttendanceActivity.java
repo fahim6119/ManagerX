@@ -66,7 +66,7 @@ public class AttendanceActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String text=(String) listView.getItemAtPosition(position);
                 EditNameDialog(text,position);
-                Log.i("fahim","Position "+position + " name "+text);
+                Log.i("arefin","Position "+position + " name "+text);
             }
         });
         getSupportActionBar().setTitle("Attendees ( "+listItems.size()+ " )");

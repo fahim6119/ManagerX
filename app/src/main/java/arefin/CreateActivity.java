@@ -13,16 +13,20 @@ import android.widget.Toast;
 
 import com.example.arefin.menuList.R;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class CreateActivity extends AppCompatActivity {
 
     int amount;
-    String name,place,date;
+    String name,place;
     Button amountEnter;
     EditText amountVal,nameVal,locVal;
     TextView amountMsg,nameMsg,locMsg;
+    int event_no;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,16 +39,17 @@ public class CreateActivity extends AppCompatActivity {
         nameVal=(EditText)findViewById(R.id.nameVal);
         amountEnter=(Button)findViewById(R.id.amountEnter);
         amount=100;
-        date= new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
         name="@strings/database_name";
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
+        event_no=preferences.getInt("event_no",0)+1;
         /*SharedPreferences prefs = getSharedPreferences("countPrefTwo", Context.MODE_PRIVATE);
         SharedPreferences prefs = getSharedPreferences("countPrefThree", Context.MODE_PRIVATE);
         */
         final SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.apply();
+        editor.putInt("event_no",event_no);
         amountEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,7 +59,7 @@ public class CreateActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), name+" Event Created",
                         Toast.LENGTH_LONG).show();
                 editor.putString("name", name);
-                editor.putString("date",date);
+                editor.putString("timestamp",new Timestamp(System.currentTimeMillis()).toString());
                 editor.putInt("amount",amount);
                 editor.putString("place",place);
                 editor.apply();
@@ -63,7 +68,8 @@ public class CreateActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
     }
+
+
+
 }

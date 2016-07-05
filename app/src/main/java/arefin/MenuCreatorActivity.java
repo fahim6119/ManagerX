@@ -124,7 +124,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
             }
             else
                 priceList[l]=Integer.parseInt(priceTemp);
-            Log.i("fahim","item "+l +" : price "+priceList[l]);
+            Log.i("arefin","item "+l +" : price "+priceList[l]);
         }
 
         descList=new String[itemNum];
@@ -137,7 +137,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
             }
             else
             descList[l]= descTemp;
-            Log.i("fahim","item "+l +" : Description "+descList[l]);
+            Log.i("arefin","item "+l +" : Description "+descList[l]);
         }
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();

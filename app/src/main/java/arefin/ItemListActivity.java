@@ -59,7 +59,6 @@ public class ItemListActivity extends AppCompatActivity implements
             users=new String[userlist.size()];
             for (int i = 0; i < userlist.size(); i++) {
                 users[i]=userlist.get(i);
-                Log.i("fahim", i + " " + users[i]);
             }
         }
 
@@ -136,7 +135,7 @@ public class ItemListActivity extends AppCompatActivity implements
                                 .show();
 
                     }
-                    Log.i("fahim","Button Pressed "+ v.getId());
+                    Log.i("arefin","Button Pressed "+ v.getId());
                 }
             });
             menuLayout.addView(menuItems[l]);
@@ -159,7 +158,7 @@ public class ItemListActivity extends AppCompatActivity implements
     public void menuGenerator(int item, String name)
     {
         orderer.get(item).add(name);
-        Log.i("fahim","Item "+item+ " name "+name);
+        Log.i("arefin","Item "+item+ " name "+name);
     }
 
     public void onClickNextButton(View v)

@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -25,9 +26,13 @@ import android.view.View;
 
 import com.example.arefin.menuList.R;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;
@@ -109,6 +114,8 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
             editor.putString("selected_"+i, str.toString());
             editor.apply();
         }
+
+        //saveSharedPreferences();
         Intent i = new Intent(FragmentActivity.this, StartActivity.class);
         // set the new task and clear flags
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -290,5 +297,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         }
         viewPager.setAdapter(adapter);
     }
+
+
 
 }
