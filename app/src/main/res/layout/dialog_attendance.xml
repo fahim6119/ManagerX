@@ -31,6 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:gravity="center">
+
         <EditText
             android:layout_marginTop="25dp"
             android:layout_centerHorizontal="true"
@@ -52,8 +53,20 @@
             android:layout_height="40dp"
             android:text="ADD"
             android:textSize="14sp"
-            android:fontFamily="sans-serif-condensed"
             android:textAllCaps="true"
+            android:textColor="@color/primaryColor"/>
+
+        <Button
+            android:text="Cancel"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/transparent"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:id="@+id/buttonAddCancel"
+            android:layout_alignBaseline="@+id/usernameSetButton"
+            android:layout_alignBottom="@+id/usernameSetButton"
+            android:layout_toStartOf="@+id/usernameSetButton"
+            android:textSize="14sp"
             android:textColor="@color/primaryColor"/>
 
     </RelativeLayout>

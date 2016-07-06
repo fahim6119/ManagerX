@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,7 +28,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AttendanceActivity extends AppCompatActivity {
+import arefin.dialogs.fragment.ListDialogFragment;
+import arefin.dialogs.iface.IMultiChoiceListDialogListener;
+
+public class AttendanceActivity extends AppCompatActivity implements
+        IMultiChoiceListDialogListener {
 
     ListView listView;
 
@@ -50,11 +55,6 @@ public class AttendanceActivity extends AppCompatActivity {
         {
             Set<String> set = preferences.getStringSet("users", null);
             listItems=new ArrayList<String>(set);
-            String users[]=new String[listItems.size()];
-            for (int i = 0; i < listItems.size(); i++) {
-                users[i]=listItems.get(i);
-                Log.i("fahim_users",users[i]);
-            }
         }
 
         listView=(ListView)findViewById(R.id.listView1);
@@ -89,6 +89,15 @@ public class AttendanceActivity extends AppCompatActivity {
         Button usernameEditButton = (Button) dialogView.findViewById(R.id.usernameEditButton);
         final EditText editUsername = (EditText) dialogView.findViewById(R.id.editUsername);
         editUsername.setHint(oldName);
+
+        final Button usernameCancelButton=(Button) dialogView.findViewById(R.id.buttonEditCancel);
+        usernameCancelButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
         usernameEditButton.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v) {
@@ -115,7 +124,6 @@ public class AttendanceActivity extends AppCompatActivity {
 
     public void updateList(String uName)
     {
-        clickCounter++;
         listItems.add(uName);
         adapter.notifyDataSetChanged();
         getSupportActionBar().setTitle("Attendees ( "+listItems.size()+ " )");
@@ -144,8 +152,16 @@ public class AttendanceActivity extends AppCompatActivity {
 
         dialog.setCancelable(true);
 
-        Button usernameSetButton = (Button) dialogView.findViewById(R.id.usernameSetButton);
+        final Button usernameSetButton = (Button) dialogView.findViewById(R.id.usernameSetButton);
         final EditText newUsername = (EditText) dialogView.findViewById(R.id.newUsername);
+
+        final Button usernameCancelButton=(Button) dialogView.findViewById(R.id.buttonAddCancel);
+        usernameCancelButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
         usernameSetButton.setOnClickListener(new View.OnClickListener()
         {
@@ -155,6 +171,11 @@ public class AttendanceActivity extends AppCompatActivity {
                  {
                      Toast.makeText(getBaseContext(), "Invalid Name",
                              Toast.LENGTH_SHORT).show();
+                     return;
+                 }
+                 else if(listItems.contains(userName)==true)
+                 {
+                     newUsername.setError("This person is already attending, please enter a different name if they are two different persons");
                      return;
                  }
                  updateList(userName);
@@ -199,8 +220,39 @@ public class AttendanceActivity extends AppCompatActivity {
             sortList();
         }
 
+        else if (id == R.id.action_remove)
+        {
+            removeMember();
+        }
         return super.onOptionsItemSelected(item);
     }
 
+    public void removeMember()
+    {
+        String users[]=new String[listItems.size()];
+        for (int i = 0; i < listItems.size(); i++) {
+            users[i]=listItems.get(i);
+        }
+        ListDialogFragment frag=new arefin.dialogs.fragment.ListDialogFragment();
+            frag.createBuilder(getBaseContext(), getSupportFragmentManager())
+                    .setTitle("Remove members from attendee list")
+                    .setItems(users)
+                    .setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE)
+                    .setRequestCode(0)
+                    .show();
+    }
+
+    @Override
+    public void onListItemsSelected(CharSequence[] values, int[] selectedPositions, int choice) {
+
+        int length=selectedPositions.length;
+        for(int i=0;i<length;i++) {
+            listItems.remove(selectedPositions[i]);
+        }
+        if(length!=0)
+            Toast.makeText(getBaseContext(), length+ " Attendee removed", Toast.LENGTH_SHORT).show();
+        adapter.notifyDataSetChanged();
+        getSupportActionBar().setTitle("Attendees ( "+listItems.size()+ " )");
+    }
 
 }

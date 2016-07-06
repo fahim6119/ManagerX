@@ -19,9 +19,11 @@ Version 0.4 :7:19 AM 06-Jul-16
 - Restore an event , with all previous data saved
 - Removed com.google.android.gms.actions.noteIntents after adding it, it increases apk size by 40%, without adding much functionality 
 
+Version 0.5 : 7:59 PM 06-Jul-16
+- Remove Attendee Option
+
 Unimplemented Features :
 - Attendee profile (How much due, How much Paid in a Special Fragment)
 - Share APK
-- Remove Attendee option
 
 

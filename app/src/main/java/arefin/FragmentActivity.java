@@ -120,6 +120,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
             editor.apply();
         }
 
+        backingUp();
         //saveSharedPreferences();
         Intent i = new Intent(FragmentActivity.this, StartActivity.class);
         // set the new task and clear flags

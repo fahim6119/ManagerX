@@ -15,9 +15,17 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/action_remove"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_remove_member"
+        android:title="Remove Member"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_sort"
         android:orderInCategory="100"
         android:icon="@drawable/ic_sort"
         android:title="Sort Alphabetically"
         app:showAsAction="ifRoom" />
+
 </menu>
