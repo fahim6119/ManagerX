@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <!--
+    <Button
+        android:id="@+id/addBtn"
+        android:text="Add New Item"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+        -->
+
+    <ImageButton
+        android:src="@drawable/ic_remove_user_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:id="@+id/imageButtonRemove"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageButton
+        android:src="@drawable/ic_add_user_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:id="@+id/imageButtonAdd"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/imageButtonRemove" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="Ordered By "
+        android:id="@+id/frag_detail_view"
+        android:gravity="center_vertical|center_horizontal"
+        android:height="50dp"
+        android:textColor="@color/mainText"
+        android:textStyle="bold"
+        android:typeface="sans"
+        android:textSize="15dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toStartOf="@id/imageButtonAdd"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listView"
+        android:drawSelectorOnTop="false"
+        android:layout_below="@id/frag_detail_view"/>
+
+</RelativeLayout>

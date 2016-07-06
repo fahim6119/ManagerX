@@ -83,7 +83,7 @@ public class ItemListActivity extends AppCompatActivity implements
             descList[i]=preferences.getString("desc_" + i, null);
         priceList=new int[itemNum];
         for(int i=0; i<itemNum; i++)
-            priceList[i]=Integer.parseInt(preferences.getString("price_" + i, null));
+            priceList[i]=preferences.getInt("price_" + i, 0);
 
     }
 
@@ -135,7 +135,7 @@ public class ItemListActivity extends AppCompatActivity implements
                                 .show();
 
                     }
-                    Log.i("arefin","Button Pressed "+ v.getId());
+                    Log.i("checkLog","Button Pressed "+ v.getId());
                 }
             });
             menuLayout.addView(menuItems[l]);
@@ -158,7 +158,7 @@ public class ItemListActivity extends AppCompatActivity implements
     public void menuGenerator(int item, String name)
     {
         orderer.get(item).add(name);
-        Log.i("arefin","Item "+item+ " name "+name);
+        Log.i("checkLog","Item "+item+ " name "+name);
     }
 
     public void onClickNextButton(View v)

@@ -1,6 +1,7 @@
 package arefin;
 
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -23,14 +24,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.arefin.menuList.R;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -133,7 +138,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
             descList[i]=preferences.getString("desc_" + i, null);
         priceList=new int[itemNum];
         for(int i=0; i<itemNum; i++)
-            priceList[i]=Integer.parseInt(preferences.getString("price_" + i, null));
+            priceList[i]=preferences.getInt("price_" + i, 0);
 
         if (preferences.contains("users")) {
             Set<String> set = preferences.getStringSet("users", null);
@@ -298,6 +303,100 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         viewPager.setAdapter(adapter);
     }
 
+    public void exportHistory(View v)
+    {
+        //SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(preferences.contains("users")==false)
+            return;
+        Log.i("FahimFile","File Writing began");
+        String name= preferences.getString("name",null);
+        String date= new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        // Create Folder
+        String folder_main = "MenuList";
+        File f = new File(Environment.getExternalStorageDirectory(), folder_main);
+        if (!f.exists()) {
+            f.mkdirs();
+        }
 
+        File myPath = new File(Environment.getExternalStorageDirectory()+ "/" + folder_main);
+        File myFile = new File(myPath, name+"_"+date+".txt");
+
+        try
+        {
+                FileWriter fw = new FileWriter(myFile);
+                PrintWriter pw = new PrintWriter(fw);
+                SavedEvent savedEvent =new SavedEvent(getBaseContext());
+                pw.println(savedEvent.toString());
+                pw.close();
+                fw.close();
+                Toast.makeText(getBaseContext(), "Records of Event " + name + " exported to SD Card",
+                        Toast.LENGTH_LONG).show();
+                onBackPressed();
+        }
+        catch (Exception e)
+        {
+            Log.i("checkLog", e.toString()+ " "+getClass().getName());
+        }
+    }
+
+    public void saveEvent(View v)
+    {
+        backingUp();
+        Intent i = new Intent(FragmentActivity.this, StartActivity.class);
+        // set the new task and clear flags
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+        finish();
+    }
+
+    private void backingUp() {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedRecords = getSharedPreferences("EventRecords", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedRecords.edit();
+        String name = preferences.getString("name", null);
+        Log.i("checkLog","JSON object writing for "+name);
+        if (name == null)
+            return;
+
+        SavedEvent savedEvent = new SavedEvent(getBaseContext());
+
+        int itemNum=preferences.getInt("itemNum",0);
+        String[] descList = new String[itemNum];
+        int[] priceList = new int[itemNum];
+        String[] paidList=new String[itemNum];
+
+        for (int i = 0; i < itemNum; i++) {
+            descList[i] = preferences.getString("desc_" + i, null);
+            priceList[i] = preferences.getInt("price_" + i, 0);
+            paidList[i]=preferences.getString("selected_"+i,null);
+        }
+
+        String[] record=new String[4];
+        record[0]=GsonInsert(savedEvent);
+        record[1]=GsonInsert(priceList);
+        record[2]=GsonInsert(descList);
+        record[3]=GsonInsert(paidList);
+
+        editor.putString("record_"+name,GsonInsert(record));
+
+
+        editor.commit();
+        if(record[0]!=null) {
+            SharedPreferences.Editor prefEditor = preferences.edit();
+            prefEditor.putBoolean("backedup",true);
+        }
+        Log.i("checkLog","JSON object written with "+ name);
+
+    }
+
+    public String GsonInsert(Object o)
+    {
+        Gson gson = new Gson();
+        String user_json = gson.toJson(o);
+        Log.i("checkLog","JSON object  "+user_json);
+        return user_json;
+    }
 
 }

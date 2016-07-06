@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,17 +23,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.arefin.menuList.R;
 
 import arefin.dialogs.fragment.ListDialogFragment;
-import arefin.dialogs.iface.IMultiChoiceListDialogListener;
 
 public class OrderFragment extends Fragment implements View.OnClickListener {
     ListView listView;
-    Button addButton, removeButton;
+    ImageButton addButton, removeButton;
     String uName;
     TextView fragment_detail;
     View rootView;
@@ -68,7 +68,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.collection_list, container, false);
+        rootView = inflater.inflate(R.layout.fragment_list, container, false);
         retrieve_sharedArray();
         listOrders = getArguments().getStringArrayList("orders");
         orders = new String[listOrders.size()];
@@ -82,10 +82,10 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         listView.setAdapter(adapter);
         clickCounter = 0;
 
-        addButton = (Button) rootView.findViewById(R.id.add_button);
+        addButton = (ImageButton) rootView.findViewById(R.id.imageButtonAdd);
         addButton.setOnClickListener(this);
 
-        removeButton = (Button) rootView.findViewById(R.id.remove_button);
+        removeButton = (ImageButton) rootView.findViewById(R.id.imageButtonRemove);
         removeButton.setOnClickListener(this);
 
         return rootView;
@@ -158,11 +158,11 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId())
         {
-            case R.id.add_button:
+            case R.id.imageButtonAdd:
                 add_member();
                 Log.i("fahimOrder","member add request");
                 break;
-            case R.id.remove_button:
+            case R.id.imageButtonRemove:
                 Log.i("fahimOrder","member remove request");
                 remove_member();
                 break;
@@ -212,7 +212,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         for(int i=0;i<counter;i++)
             listOrders.add(userSet.get(i));
         updateList();
-        Snackbar.make(rootView,"New order from "+ counter +" people accepted", Snackbar.LENGTH_LONG)
+        if(counter!=0)
+            Snackbar.make(rootView,"New order from "+ counter +" people accepted", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
 
@@ -234,7 +235,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         //Update Order List for this item
         listOrders.removeAll(userSet);
         updateList();
-        Snackbar.make(rootView,"Order from "+ userSet.size()+" people Removed", Snackbar.LENGTH_LONG)
+        if(userSet.size()!=0)
+            Snackbar.make(rootView,"Order from "+ userSet.size()+" people Removed", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
 
@@ -260,6 +262,12 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     {
         Log.i("FahimOrders","Retrieving Preferences for Fragment "+frag_id);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
+        if(preferences.contains("name")==false)
+        {
+            Toast.makeText(getActivity().getBaseContext(), "No records Available",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
         itemNum = preferences.getInt("itemNum", 0);
         descList = new String[itemNum];
         orderer = new ArrayList<>();
@@ -267,7 +275,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             descList[i]=preferences.getString("desc_" + i, null);
         priceList=new int[itemNum];
         for(int i=0; i<itemNum; i++)
-            priceList[i]=Integer.parseInt(preferences.getString("price_" + i, null));
+            priceList[i]=preferences.getInt("price_" + i, 0);
 
         for(int l=0;l<itemNum;l++)
         {
@@ -280,13 +288,15 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         Log.i("FahimOrders","selected for " +frag_id+ " "+savedString);
         //StringTokenizer st = new StringTokenizer(savedString, ",");
         //selections = new int[listOrders.size()];
-        if(savedString.equals(""))
-            selections=null;
-        else {
-            List<String> items = new ArrayList<>(Arrays.asList(savedString.split(",")));
-            selections = new int[items.size()];
-            for (int i = 0; i < items.size(); i++) {
-                selections[i] = Integer.parseInt(items.get(i));
+        if(savedString!=null) {
+            if (savedString.equals(""))
+                selections = null;
+            else {
+                List<String> items = new ArrayList<>(Arrays.asList(savedString.split(",")));
+                selections = new int[items.size()];
+                for (int i = 0; i < items.size(); i++) {
+                    selections[i] = Integer.parseInt(items.get(i));
+                }
             }
         }
     }

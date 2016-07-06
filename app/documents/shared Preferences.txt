@@ -1,0 +1,9 @@
+Things in SharedPreference
+boolean backedup
+
+int event_no,itemNum;
+    String[] descList,paidList;
+    int[] priceList;
+    public String name,timestamp,place;
+    Set<String> users;
+    List<Set<String>> menuSet;
