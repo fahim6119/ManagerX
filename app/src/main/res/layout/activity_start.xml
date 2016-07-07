@@ -9,7 +9,7 @@
     <Button
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="Create New"
+        android:text="Create New Event"
         android:textAllCaps="false"
         android:id="@+id/createButton"
         android:background="@drawable/button_main"
@@ -24,7 +24,7 @@
     <Button
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="Use Existing"
+        android:text="Edit Existing Event"
         android:textAllCaps="false"
         android:background="@drawable/button_main"
         android:textSize="20sp"

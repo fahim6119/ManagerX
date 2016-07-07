@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,12 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.example.arefin.menuList.R;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import com.batfia.arefin.MenuAssistant.R;
 
 public class MenuCreatorActivity extends AppCompatActivity {
 
@@ -50,7 +44,6 @@ public class MenuCreatorActivity extends AppCompatActivity {
         priceLayout=(LinearLayout) findViewById(R.id.price_layout);
         lp = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.WRAP_CONTENT,    LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        addMenuBtn.setClickable(false);
         retrieve_sharedArray();
 
     }
@@ -59,7 +52,6 @@ public class MenuCreatorActivity extends AppCompatActivity {
     //retrieve Menu if already saved
     public void retrieve_sharedArray()
     {
-        addMenuBtn.setClickable(true);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if(preferences.contains("itemNum"))
         {
@@ -111,6 +103,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
 
     public void menuItemSelected(View v){
 
+        addMenuBtn.setVisibility(View.VISIBLE);
         String text=itemNumText.getText().toString();
         if(text.isEmpty()==false) {
             itemNum = Integer.parseInt(text);

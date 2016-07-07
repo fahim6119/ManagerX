@@ -10,14 +10,13 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
-import com.example.arefin.menuList.R;
+import com.batfia.arefin.MenuAssistant.R;
 import arefin.dialogs.core.BaseDialogBuilder;
 import arefin.dialogs.core.BaseDialogFragment;
 import arefin.dialogs.iface.IListDialogListener;

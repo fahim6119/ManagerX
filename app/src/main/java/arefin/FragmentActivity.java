@@ -7,9 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -26,7 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.arefin.menuList.R;
+import com.batfia.arefin.MenuAssistant.R;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -37,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;
@@ -230,8 +227,11 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         else if (id == R.id.nav_exit) {
             finish();
         }
-        else if (id == R.id.nav_history) {
-
+        else if (id == R.id.nav_history)
+        {
+            Intent createIntent = new Intent(FragmentActivity.this, HistoryActivity.class);
+            startActivity(createIntent);
+            finish();
         }
         else if (id == R.id.nav_create) {
             Intent createIntent = new Intent(FragmentActivity.this, CreateActivity.class);
@@ -314,32 +314,35 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         String name= preferences.getString("name",null);
         String date= new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         // Create Folder
-        String folder_main = "MenuList";
+        //String folder_main = getBaseContext().getString(R.string.app_name);
+        String folder_main="MenuAssistant";
         File f = new File(Environment.getExternalStorageDirectory(), folder_main);
         if (!f.exists()) {
             f.mkdirs();
         }
 
+        Log.i("checkLog","folder created");
         File myPath = new File(Environment.getExternalStorageDirectory()+ "/" + folder_main);
         File myFile = new File(myPath, name+"_"+date+".txt");
 
         try
         {
-                FileWriter fw = new FileWriter(myFile);
-                PrintWriter pw = new PrintWriter(fw);
-                SavedEvent savedEvent =new SavedEvent(getBaseContext());
-                pw.println(savedEvent.toString());
-                pw.close();
-                fw.close();
-                Toast.makeText(getBaseContext(), "Records of Event " + name + " exported to SD Card",
-                        Toast.LENGTH_LONG).show();
-                onBackPressed();
+            FileWriter fw = new FileWriter(myFile);
+            PrintWriter pw = new PrintWriter(fw);
+            SavedEvent savedEvent =new SavedEvent(getBaseContext());
+            pw.println(savedEvent.toString());
+            pw.close();
+            fw.close();
+            Toast.makeText(getBaseContext(), "Records of Event " + name + " exported to SD Card",
+                    Toast.LENGTH_LONG).show();
+            onBackPressed();
         }
         catch (Exception e)
         {
             Log.i("checkLog", e.toString()+ " "+getClass().getName());
         }
     }
+
 
     public void saveEvent(View v)
     {

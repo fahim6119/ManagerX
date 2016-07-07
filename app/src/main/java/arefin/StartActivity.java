@@ -3,10 +3,8 @@ package arefin;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.constraint.solver.SolverVariable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +12,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
-import com.example.arefin.menuList.R;
+import com.batfia.arefin.MenuAssistant.R;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -25,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import arefin.dialogs.fragment.ListDialogFragment;
@@ -39,6 +36,7 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
         SharedPreferences sharedRecords = getSharedPreferences("EventRecords", Context.MODE_PRIVATE);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor =sharedRecords.edit();
@@ -112,18 +110,22 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if(preferences.contains("users")==false)
             return;
-        Log.i("FahimFile","File Writing began");
+        Log.i("checkLog","File Writing began");
         String name= preferences.getString("name",null);
         String date= new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         // Create Folder
-        String folder_main = "MenuList";
+        String folder_main = getBaseContext().getString(R.string.app_name);
         File f = new File(Environment.getExternalStorageDirectory(), folder_main);
         if (!f.exists()) {
             f.mkdirs();
         }
 
+        Log.i("checkLog","folder created "+f.exists());
+
         File myPath = new File(Environment.getExternalStorageDirectory()+ "/" + folder_main);
         File myFile = new File(myPath, name+"_"+date+".txt");
+
+        Log.i("checkLog","filepath created "+myFile.exists());
 
         try
         {

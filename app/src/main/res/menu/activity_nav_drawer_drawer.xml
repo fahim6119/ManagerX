@@ -7,7 +7,7 @@
             <item
                 android:id="@+id/nav_create"
                 android:icon="@drawable/ic_create"
-                android:title="Create New" />
+                android:title="Create New Event" />
             <item
                 android:id="@+id/nav_members"
                 android:icon="@drawable/group"

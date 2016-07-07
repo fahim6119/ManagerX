@@ -12,18 +12,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.arefin.menuList.R;
+import com.batfia.arefin.MenuAssistant.R;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 /*
 cd A:/Android_SDK/platform-tools/
 adb shell
-cd /data/data/com.example.arefin.menuList/shared_prefs
+cd /data/data/com.batfia.arefin.MenuAssistant/shared_prefs
 cat EventRecords.xml
 */
 
@@ -40,8 +36,8 @@ public class CreateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
-        amountMsg=(TextView)findViewById(R.id.amountMsg);
-        amountVal=(EditText)findViewById(R.id.amountVal);
+        //amountMsg=(TextView)findViewById(R.id.amountMsg);
+        //amountVal=(EditText)findViewById(R.id.amountVal);
         locMsg=(TextView)findViewById(R.id.locMsg);
         locVal=(EditText)findViewById(R.id.locVal);
         nameMsg=(TextView)findViewById(R.id.nameMsg);

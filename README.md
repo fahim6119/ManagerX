@@ -1,7 +1,7 @@
-# menuList
-Intelligent Assistant for paying the bills after a hangout
+# MenuAssistant
+Intelligent Assistant for paying the bills after a hangout.
 
-Created it for my own use, as I needed it to help me share the bills properly.Started it as my first android project, so added features as I learned new things.
+When we go out on hangouts at a restaurant with a large group of friends, it's easy to loose track of who ordered what and how should we split the bill. To keep track of those cases, I created this app for my personal use.Started it as my first android project and added features as I learned new things.
 
 Current Features : 
 	- Create,Edit and update attendee list

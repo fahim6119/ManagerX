@@ -28,7 +28,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.arefin.menuList.R;
+import com.batfia.arefin.MenuAssistant.R;
 
 import arefin.dialogs.fragment.ListDialogFragment;
 
@@ -130,6 +130,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     public ArrayList<Integer> backUpSelected()
     {
         ArrayList<Integer> selectedArray=new ArrayList();
+        if(listView==null)
+            return selectedArray;
         SparseBooleanArray checked = listView.getCheckedItemPositions();
         int size = checked.size(); // number of name-value pairs in the array
         if(size==0) {
