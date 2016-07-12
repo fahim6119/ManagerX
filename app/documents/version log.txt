@@ -23,12 +23,15 @@ Version 0.5 : 7:59 PM 06-Jul-16
 - Remove Attendee Option
 
 Version 0.6 : 12:13 AM 08-Jul-16
-- Updated Icon
+- Rebranded the app (Updated Icon, app name and package name)
 - Added option to view all exported files
 - Bug fixed (Next Button in MenuCreator could be clicked without inputting the description and price )  
 
-Unimplemented Features :
-- Attendee profile (How much due, How much Paid in a Special Fragment)
-- Share APK
+Version 0.7 : 11:55 AM 12-Jul-16
+- Attendee profile (How much due, How much Paid in a Fragment)
+- Add vat/ discount
+- Add new item in menu midway 
 
+Unimplemented Features :
+- Share APK
 

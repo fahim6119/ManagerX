@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <!--
+    <Button
+        android:id="@+id/addBtn"
+        android:text="Add New Item"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+        -->
+    <ImageButton
+        android:src="@drawable/ic_vat"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:id="@+id/imageButtonVat"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="addVat"/>
+    <TextView
+        android:layout_width="fill_parent"
+        android:height="50dp"
+        android:text="Payment and Due from people"
+        android:id="@+id/frag_payment_view"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="@color/mainText"
+        android:textStyle="bold"
+        android:typeface="sans"
+        android:textSize="15dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toStartOf="@+id/imageButtonVat" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listPayment"
+        android:drawSelectorOnTop="false"
+        android:layout_below="@+id/frag_payment_view" />
+
+</RelativeLayout>

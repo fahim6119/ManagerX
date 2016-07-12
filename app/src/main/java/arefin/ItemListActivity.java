@@ -69,7 +69,17 @@ public class ItemListActivity extends AppCompatActivity implements
         for( int i = 0; i < itemNum; i++) {
             orderer.add(new ArrayList<String>());
         }
-
+        if(preferences.contains("menu_0"))
+        {
+            for(int l=0;l<itemNum;l++)
+            {
+                if(preferences.contains("menu_"+l)==false)
+                    return;
+                Set<String> set = preferences.getStringSet("menu_"+l, null);
+                orderer.set(l,new ArrayList<String>(set));
+                Collections.sort(orderer.get(l), String.CASE_INSENSITIVE_ORDER);
+            }
+        }
     }
 
 

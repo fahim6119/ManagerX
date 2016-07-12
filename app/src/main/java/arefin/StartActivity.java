@@ -31,6 +31,7 @@ import arefin.dialogs.iface.IListDialogListener;
 
 public class StartActivity extends AppCompatActivity implements IListDialogListener {
 
+    boolean update=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -40,18 +41,23 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
         SharedPreferences sharedRecords = getSharedPreferences("EventRecords", Context.MODE_PRIVATE);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor =sharedRecords.edit();
-        String oldEvent=preferences.getString("name",null);
-        Log.i("checkLog","Old Event name "+oldEvent);
-
-        Set<String> records = new HashSet<String>();
-        if(sharedRecords.contains("records")) {
-            Set<String> set = sharedRecords.getStringSet("records", null);
-            records.addAll(set);
+        if(update==true) {
+            editor.clear();
+            editor.apply();
         }
-        if(oldEvent!=null)
-            records.add(oldEvent);
-        editor.putStringSet("records",records);
-        editor.apply();
+        else {
+            String oldEvent = preferences.getString("name", null);
+            Log.i("checkLog", "Old Event name " + oldEvent);
+            Set<String> records = new HashSet<String>();
+            if (sharedRecords.contains("records")) {
+                Set<String> set = sharedRecords.getStringSet("records", null);
+                records.addAll(set);
+            }
+            if (oldEvent != null)
+                records.add(oldEvent);
+            editor.putStringSet("records", records);
+            editor.apply();
+        }
     }
 
 
@@ -71,7 +77,7 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
         SharedPreferences sharedRecords = getSharedPreferences("EventRecords", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor =sharedRecords.edit();
         Set<String> set = sharedRecords.getStringSet("records", null);
-        if(set.isEmpty()==false) {
+        if(set!=null && set.isEmpty()==false) {
             ArrayList<String> recordlist = new ArrayList<String>(set);
             Collections.sort(recordlist, String.CASE_INSENSITIVE_ORDER);
             String records[] = new String[recordlist.size()];
@@ -158,30 +164,44 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
         SharedPreferences sharedRecords = getSharedPreferences("EventRecords", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedRecords.edit();
         String name = preferences.getString("name", null);
-        Log.i("checkLog","JSON object writing for "+name);
+        //Log.i("checkLog","JSON object writing for "+name);
         if (name == null)
             return;
 
         SavedEvent savedEvent = new SavedEvent(getBaseContext());
-
+        if(preferences.contains("itemNum")==false)
+            return;
+        //int paidSize=savedEvent.paidList.length;
         int itemNum=preferences.getInt("itemNum",0);
         String[] descList = new String[itemNum];
         int[] priceList = new int[itemNum];
-        String[] paidList=new String[itemNum];
-
+       // int[] paidList=new int[paidSize];
+        String[] servedList = new String[itemNum];
         for (int i = 0; i < itemNum; i++) {
             descList[i] = preferences.getString("desc_" + i, null);
             priceList[i] = preferences.getInt("price_" + i, 0);
-            paidList[i]=preferences.getString("selected_"+i,null);
+            servedList[i] = preferences.getString("selected_" + i, null);
         }
+
+        /*
+        for (int i = 0; i <paidSize; i++)
+        {
+            ArrayList<String> userlist= new ArrayList<>(savedEvent.users);
+            String userName=userlist.get(i);
+            paidList[i]=preferences.getInt("paid_"+userName,0);
+        }
+                String[] record=new String[5];
+        */
 
         String[] record=new String[4];
         record[0]=GsonInsert(savedEvent);
         record[1]=GsonInsert(priceList);
         record[2]=GsonInsert(descList);
-        record[3]=GsonInsert(paidList);
-
+        record[3]=GsonInsert(servedList);
+       // record[4]=GsonInsert(paidList);
         editor.putString("record_"+name,GsonInsert(record));
+
+
 
 
         editor.commit();
@@ -213,12 +233,16 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
         Gson descGson= new Gson();
         String[] desc =descGson.fromJson(records[2],String[].class);
 
-        Gson paidGson= new Gson();
-        String[] paid =paidGson.fromJson(records[3],String[].class);
+        Gson servedGson= new Gson();
+        String[] served =servedGson.fromJson(records[3],String[].class);
+
+        //Gson paidGson= new Gson();
+       // int[] paid =paidGson.fromJson(records[4],int[].class);
 
         savedEvent.priceList=price;
         savedEvent.descList=desc;
-        savedEvent.paidList=paid;
+        savedEvent.servedList=served;
+        //savedEvent.paidList=paid;
         Log.i("checkLog","Retrieved "+savedEvent.toString());
 
         savedEvent.writeToPreference(getBaseContext());

@@ -7,3 +7,4 @@ int event_no,itemNum;
     public String name,timestamp,place;
     Set<String> users;
     List<Set<String>> menuSet;
+	List<Integer> paid;

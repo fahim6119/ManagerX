@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +23,8 @@ import java.util.Set;
 public class SavedEvent
 {
     int event_no,itemNum;
-    String[] descList,paidList;
+    HashMap<String,Integer> paid;
+    String[] descList,servedList;
     int[] priceList;
     public String name,timestamp,place;
     Set<String> users;
@@ -42,6 +44,7 @@ public class SavedEvent
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         List<String> description;
         List<Integer> price;
+        ArrayList<String> userList=new ArrayList<>();
         if(preferences.contains("name")) {
             name = preferences.getString("name", null);
             event_no = preferences.getInt("event_no", 1);
@@ -59,7 +62,6 @@ public class SavedEvent
 
             if(preferences.contains("users"))
             {
-                ArrayList<String> userList;
                 users = preferences.getStringSet("users", null);
                 userList = new ArrayList<>(users);
                 Collections.sort(userList);
@@ -90,11 +92,23 @@ public class SavedEvent
                 }
             }
 
-            paidList= new String[itemNum];
+            servedList= new String[itemNum];
             for(int i=0;i<itemNum;i++)
             {
-                paidList[i] = preferences.getString("selected_"+i, null);
+                servedList[i] = preferences.getString("selected_"+i, null);
             }
+
+            paid=new HashMap<>(userList.size());
+            for(int i=0;i<userList.size();i++)
+            {
+                String name=userList.get(i);
+                if(preferences.contains("paid_"+name))
+                {
+                    int val = preferences.getInt("paid_" + name, 0);
+                    paid.put(name,val);
+                }
+            }
+
         }
     }
 
@@ -109,13 +123,19 @@ public class SavedEvent
         editor.putString("timestamp",new Timestamp(System.currentTimeMillis()).toString());
         editor.putString("place",place);
         editor.putStringSet("users",users );
+        ArrayList<String> userList = new ArrayList<>(users);
         editor.putInt("itemNum", itemNum);
         for(int i=0;i<itemNum; i++)
         {
             editor.putInt("price_" + i, priceList[i]);
             editor.putString("desc_" + i, descList[i]);
             editor.putStringSet("menu_" + i, menuSet.get(i));
-            editor.putString("selected_"+i,paidList[i]);
+            editor.putString("selected_"+i,servedList[i]);
+        }
+        for(int i=0;i<userList.size();i++) {
+            String name = userList.get(i);
+            int paidAmount = (int) paid.get(name);
+            editor.putInt("paid_" + name, paidAmount);
         }
         editor.apply();
 
@@ -124,6 +144,7 @@ public class SavedEvent
     @Override
     public String toString()
     {
+        ArrayList<String> userList = new ArrayList<>(users);
         StringBuilder sb=new StringBuilder();
         sb.append("********** Event "+ event_no+"**********\n");
         sb.append("\n");
@@ -156,24 +177,33 @@ public class SavedEvent
             sb.append("\n");
             sb.append(menuSet.get(i).toString());
             sb.append("\n");
-            String savedString =paidList[i];
+            String savedString =servedList[i];
             int[] selections;
-            ArrayList<String> paidMembers=new ArrayList<String>(menuSet.get(i));
-            sb.append("\n Paid By : "+paidMembers.size()+"\n");
+            ArrayList<String> servedMembers=new ArrayList<String>(menuSet.get(i));
             if(savedString!=null) {
                 if (savedString.equals(""))
                     selections = null;
                 else {
                     List<String> items = new ArrayList<>(Arrays.asList(savedString.split(",")));
                     selections = new int[items.size()];
+                    sb.append("\n Served to : "+selections.length+"\n");
                     for (int j = 0; j < items.size(); j++) {
                         selections[j] = Integer.parseInt(items.get(j));
                     }
                     for(int k=0;k<selections.length;k++)
-                        sb.append(paidMembers.get(selections[k])+", ");
+                        sb.append(servedMembers.get(selections[k])+", ");
                 }
             }
+
             sb.append("\n");
+        }
+
+        sb.append("Paid By : \n");
+        for(int k=0;k<userList.size();k++)
+        {
+            String name=userList.get(k);
+            //sb.append(name + " "+ paidList[k]+",");
+            sb.append(name+" "+paid.get(name)+" , ");
         }
         return sb.toString();
     }

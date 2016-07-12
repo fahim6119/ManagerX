@@ -1,5 +1,6 @@
 package arefin;
 
+import android.app.Dialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -18,10 +19,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.batfia.arefin.MenuAssistant.R;
@@ -39,7 +45,7 @@ import java.util.Set;
 
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;
 
-public class FragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,IMultiChoiceListDialogListener {
+public class FragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,IMultiChoiceListDialogListener, OrderFragment.onOrdered {
 
     DrawerLayout drawer;
     int itemNum;
@@ -48,9 +54,20 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
     List<String> userlist;
     public ArrayList<ArrayList<String>> orderer;
     OrderFragment fragments[];
+    PaymentFragment paymentFragment;
     int[] fragment_id;
     Adapter adapter;
 
+
+    public void onitemOrdered(String name,int frag_id)
+    {
+        paymentFragment.addOrder(name,priceList[frag_id]);
+    }
+
+    public void onitemRemoved(String name,int frag_id)
+    {
+        paymentFragment.removeOrder(name,priceList[frag_id]);
+    }
 
     @Override
     public void onListItemsSelected(CharSequence[] values, int[] selectedPositions, int choice) {
@@ -116,6 +133,13 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
             editor.putString("selected_"+i, str.toString());
             editor.apply();
         }
+        ArrayList<Integer> paid=paymentFragment.paid;
+        for(int i=0;i<paid.size();i++)
+        {
+            String name=userlist.get(i);
+            editor.putInt("paid_" + name, paid.get(i));
+            editor.apply();
+        }
 
         backingUp();
         //saveSharedPreferences();
@@ -154,7 +178,6 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
             orderer.add(new ArrayList<String>(set));
             Collections.sort(orderer.get(l), String.CASE_INSENSITIVE_ORDER);
         }
-
     }
 
     @Override
@@ -206,6 +229,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
 
 
     @SuppressWarnings("StatementWithEmptyBody")
+
 
 
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -301,7 +325,57 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
             adapter.addFragment(fragments[i], "Item" + (i + 1));
             adapter.getItem(i).setArguments(bundle);
         }
+        paymentFragment=new PaymentFragment();
+        adapter.addFragment(paymentFragment,"Payment ");
         viewPager.setAdapter(adapter);
+    }
+
+    public void addVat(View v)
+    {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_percentage, null);
+        dialog.setContentView(dialogView);
+
+        dialog.setCancelable(true);
+
+        final Button percentageSetButton = (Button) dialogView.findViewById(R.id.percentageSetButton);
+        final EditText vat = (EditText) dialogView.findViewById(R.id.vat);
+        final EditText discount = (EditText) dialogView.findViewById(R.id.discount);
+
+        final Button percentageCancelButton=(Button) dialogView.findViewById(R.id.percentageCancel);
+        percentageCancelButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        percentageSetButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v) {
+                String vatPercent= vat.getText().toString().trim();
+                String discountPercent=discount.getText().toString().trim();
+                double vat,discount;
+                if(TextUtils.isEmpty(vatPercent))
+                {
+                    vat=0;
+                }
+                else
+                    vat=Double.parseDouble(vatPercent);
+                if(TextUtils.isEmpty(discountPercent))
+                {
+                    discount=0;
+                }
+                else
+                    discount=Double.parseDouble(discountPercent);
+                paymentFragment.addVat(vat,discount);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
     }
 
     public void exportHistory(View v)
@@ -346,12 +420,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
 
     public void saveEvent(View v)
     {
-        backingUp();
-        Intent i = new Intent(FragmentActivity.this, StartActivity.class);
-        // set the new task and clear flags
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
-        finish();
+        onBackPressed();
     }
 
     private void backingUp() {
@@ -360,29 +429,35 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         SharedPreferences sharedRecords = getSharedPreferences("EventRecords", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedRecords.edit();
         String name = preferences.getString("name", null);
-        Log.i("checkLog","JSON object writing for "+name);
         if (name == null)
             return;
 
         SavedEvent savedEvent = new SavedEvent(getBaseContext());
 
-        int itemNum=preferences.getInt("itemNum",0);
+        int itemNum = preferences.getInt("itemNum", 0);
         String[] descList = new String[itemNum];
         int[] priceList = new int[itemNum];
-        String[] paidList=new String[itemNum];
-
+        int[] paidList=new int[userlist.size()];
+        String[] servedList = new String[itemNum];
         for (int i = 0; i < itemNum; i++) {
             descList[i] = preferences.getString("desc_" + i, null);
             priceList[i] = preferences.getInt("price_" + i, 0);
-            paidList[i]=preferences.getString("selected_"+i,null);
+            servedList[i] = preferences.getString("selected_" + i, null);
         }
-
+        /*
+        for (int i = 0; i < userlist.size(); i++)
+        {
+            String userName=userlist.get(i);
+            paidList[i]=preferences.getInt("paid_"+userName,0);
+        }
+        String[] record=new String[5];
+        */
         String[] record=new String[4];
         record[0]=GsonInsert(savedEvent);
         record[1]=GsonInsert(priceList);
         record[2]=GsonInsert(descList);
-        record[3]=GsonInsert(paidList);
-
+        record[3]=GsonInsert(servedList);
+       // record[4]=GsonInsert(paidList);
         editor.putString("record_"+name,GsonInsert(record));
 
 

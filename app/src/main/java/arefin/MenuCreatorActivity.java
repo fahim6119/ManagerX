@@ -34,7 +34,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Menu Items");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        itemNum-=0;
         itemNumText=(EditText) findViewById(R.id.itemNumText);
         itemNumButton=(Button) findViewById(R.id.ItemNumButton);
 
@@ -64,6 +64,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
                 priceList[i]=preferences.getInt("price_" + i, 0);
             itemNumText.setText(Integer.toString(itemNum));
             if(viewGenerator()) {
+                addMenuBtn.setVisibility(View.VISIBLE);
                 for (int l = 0; l < itemNum; l++) {
                     description[l].setText(descList[l]);
                     price[l].setText(Integer.toString(priceList[l]));
@@ -105,9 +106,19 @@ public class MenuCreatorActivity extends AppCompatActivity {
 
         addMenuBtn.setVisibility(View.VISIBLE);
         String text=itemNumText.getText().toString();
-        if(text.isEmpty()==false) {
+        if(text.isEmpty()==false)
+        {
+            int oldNum=itemNum;
             itemNum = Integer.parseInt(text);
             viewGenerator();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            if(preferences.contains("itemNum") && oldNum<=itemNum)
+            {
+                for (int l = 0; l < oldNum; l++) {
+                    description[l].setText(descList[l]);
+                    price[l].setText(Integer.toString(priceList[l]));
+                }
+            }
         }
     }
 

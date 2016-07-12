@@ -33,6 +33,7 @@ import com.batfia.arefin.MenuAssistant.R;
 import arefin.dialogs.fragment.ListDialogFragment;
 
 public class OrderFragment extends Fragment implements View.OnClickListener {
+    onOrdered mCallback;
     ListView listView;
     ImageButton addButton, removeButton;
     String uName;
@@ -72,7 +73,6 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         retrieve_sharedArray();
         listOrders = getArguments().getStringArrayList("orders");
         orders = new String[listOrders.size()];
-        orders = listOrders.toArray(orders);
         frag_id = getArguments().getInt("fragId");
         fragment_detail = (TextView) rootView.findViewById(R.id.frag_detail_view);
         fragment_detail.setText("Ordered By " + orders.length + ", Price " + priceList[frag_id]);
@@ -88,8 +88,23 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         removeButton = (ImageButton) rootView.findViewById(R.id.imageButtonRemove);
         removeButton.setOnClickListener(this);
 
+        try {
+            mCallback = (onOrdered) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
+
         return rootView;
 
+    }
+
+
+
+    // Container Activity must implement this interface
+    public interface onOrdered{
+        public void onitemOrdered(String name,int fragment_id);
+        public void onitemRemoved(String name,int fragment_id);
     }
 
     public void onListItemsSelected(CharSequence[] values, int[] selectedPositions, int choice) {
@@ -211,8 +226,10 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     {
         //Update Order List for this item
         int counter=userSet.size();
-        for(int i=0;i<counter;i++)
+        for(int i=0;i<counter;i++) {
             listOrders.add(userSet.get(i));
+            mCallback.onitemOrdered(userSet.get(i),frag_id);
+        }
         updateList();
         if(counter!=0)
             Snackbar.make(rootView,"New order from "+ counter +" people accepted", Snackbar.LENGTH_LONG)
@@ -235,6 +252,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     public void removeOrder(ArrayList<String> userSet)
     {
         //Update Order List for this item
+        for(int i=0;i<userSet.size();i++)
+            mCallback.onitemRemoved(userSet.get(i),frag_id);
         listOrders.removeAll(userSet);
         updateList();
         if(userSet.size()!=0)
