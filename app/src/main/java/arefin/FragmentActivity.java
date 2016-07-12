@@ -119,6 +119,18 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
     @Override
     public void onBackPressed()
     {
+        savePreference();
+        backingUp();
+        //saveSharedPreferences();
+        Intent i = new Intent(FragmentActivity.this, StartActivity.class);
+        // set the new task and clear flags
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+        finish();
+    }
+
+    public void savePreference()
+    {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
 
@@ -131,23 +143,19 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
                 str.append(selection.get(k)).append(",");
             }
             editor.putString("selected_"+i, str.toString());
-            editor.apply();
         }
+        editor.apply();
         ArrayList<Integer> paid=paymentFragment.paid;
+        ArrayList<Integer> total=paymentFragment.total;
         for(int i=0;i<paid.size();i++)
         {
             String name=userlist.get(i);
             editor.putInt("paid_" + name, paid.get(i));
-            editor.apply();
+            editor.putInt("total_" + name, total.get(i));
+            int due=total.get(i)-paid.get(i);
+            editor.putInt("due_"+name,due);
         }
-
-        backingUp();
-        //saveSharedPreferences();
-        Intent i = new Intent(FragmentActivity.this, StartActivity.class);
-        // set the new task and clear flags
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
-        finish();
+        editor.apply();
     }
 
     public void retrieve_sharedArray()
@@ -380,6 +388,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
 
     public void exportHistory(View v)
     {
+        savePreference();
         //SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if(preferences.contains("users")==false)

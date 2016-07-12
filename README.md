@@ -9,6 +9,7 @@ Current Features :
 	- Edit orders as you wish
 	- Save an event for later access or export it to SD card as a txt file
 	- Restore an older event , with all previous data saved
+	- Save how much each person's bill was, how much they paid and how much they were due
 
 
 

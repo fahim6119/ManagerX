@@ -31,6 +31,7 @@ Version 0.7 : 11:55 AM 12-Jul-16
 - Attendee profile (How much due, How much Paid in a Fragment)
 - Add vat/ discount
 - Add new item in menu midway 
+- Changed exported file format
 
 Unimplemented Features :
 - Share APK

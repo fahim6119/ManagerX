@@ -23,7 +23,7 @@ import java.util.Set;
 public class SavedEvent
 {
     int event_no,itemNum;
-    HashMap<String,Integer> paid;
+    HashMap<String,Integer> paid,total,due;
     String[] descList,servedList;
     int[] priceList;
     public String name,timestamp,place;
@@ -40,7 +40,6 @@ public class SavedEvent
 
     public void initialize(Context context)
     {
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         List<String> description;
         List<Integer> price;
@@ -97,15 +96,21 @@ public class SavedEvent
             {
                 servedList[i] = preferences.getString("selected_"+i, null);
             }
-
-            paid=new HashMap<>(userList.size());
-            for(int i=0;i<userList.size();i++)
+            int size=userList.size();
+            paid=new HashMap<>(size);
+            total=new HashMap<>(size);
+            due=new HashMap<>(size);
+            for(int i=0;i<size;i++)
             {
                 String name=userList.get(i);
                 if(preferences.contains("paid_"+name))
                 {
-                    int val = preferences.getInt("paid_" + name, 0);
-                    paid.put(name,val);
+                    int valPaid = preferences.getInt("paid_" + name, 0);
+                    paid.put(name,valPaid);
+                    int valTotal = preferences.getInt("total_" + name, 0);
+                    total.put(name,valTotal);
+                    int valDue = preferences.getInt("due_" + name, 0);
+                    due.put(name,valDue);
                 }
             }
 
@@ -136,6 +141,10 @@ public class SavedEvent
             String name = userList.get(i);
             int paidAmount = (int) paid.get(name);
             editor.putInt("paid_" + name, paidAmount);
+            int totalAmount=(int) total.get(name);
+            editor.putInt("total_"+name,totalAmount);
+            int dueAmount=(int) due.get(name);
+            editor.putInt("due_"+name,dueAmount);
         }
         editor.apply();
 
@@ -198,12 +207,12 @@ public class SavedEvent
             sb.append("\n");
         }
 
-        sb.append("Paid By : \n");
+        sb.append("\nPayments Made : \n");
         for(int k=0;k<userList.size();k++)
         {
             String name=userList.get(k);
             //sb.append(name + " "+ paidList[k]+",");
-            sb.append(name+" "+paid.get(name)+" , ");
+            sb.append(name+"\t :- Bill : "+total.get(name)+", Paid : "+paid.get(name)+" , Due : "+due.get(name)+"\n");
         }
         return sb.toString();
     }
