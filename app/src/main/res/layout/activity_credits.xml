@@ -7,12 +7,25 @@
     android:layout_height="match_parent"
     tools:context="arefin.CreditsActivity">
 
+
     <TextView
-        android:text="https://github.com/avast/android-styled-dialogs"
+        android:text="Developed by : Fahim Arefin,\nfor personal use"
+        android:gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="74dp"
+        android:layout_marginBottom="77dp"
+        android:id="@+id/textView4"
+        android:textSize="22dp"
+        android:textColor="@color/mainText"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Dialogs : https://github.com/avast/android-styled-dialogs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/textView2"
-        android:layout_alignParentTop="true"
+        android:layout_marginBottom="219dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

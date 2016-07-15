@@ -27,9 +27,10 @@ import java.util.Set;
 
 import arefin.dialogs.fragment.ListDialogFragment;
 import arefin.dialogs.iface.IListDialogListener;
+import arefin.dialogs.iface.IMultiChoiceListDialogListener;
 
 
-public class StartActivity extends AppCompatActivity implements IListDialogListener {
+public class StartActivity extends AppCompatActivity implements IListDialogListener, IMultiChoiceListDialogListener {
 
     boolean update=false;
     @Override
@@ -60,6 +61,30 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
         }
     }
 
+    public void onClickClearButton(View v)
+    {
+        SharedPreferences sharedRecords = getSharedPreferences("EventRecords", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor =sharedRecords.edit();
+        Set<String> set = sharedRecords.getStringSet("records", null);
+        if(set!=null && set.isEmpty()==false) {
+            ArrayList<String> recordlist = new ArrayList<String>(set);
+            Collections.sort(recordlist, String.CASE_INSENSITIVE_ORDER);
+            String records[] = new String[recordlist.size()];
+            for (int i = 0; i < recordlist.size(); i++) {
+                records[i] = recordlist.get(i);
+            }
+
+            ListDialogFragment frag = new arefin.dialogs.fragment.ListDialogFragment();
+            frag.createBuilder(getBaseContext(), getSupportFragmentManager())
+                    .setTitle("Delete Old Event")
+                    .setItems(records)
+                    .setCancelable(false)
+                    .setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE)
+                    .setRequestCode(1)
+                    .show();
+
+        }
+    }
 
     public void onClickCreateButton(View v){
         exportHistory();
@@ -70,6 +95,7 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
             backingUp();
         Intent createIntent = new Intent(StartActivity.this, CreateActivity.class);
         startActivity(createIntent);
+
     }
     public void onClickOldButton(View v){
         //Intent oldIntent = new Intent(StartActivity.this, AttendanceActivity.class);
@@ -108,6 +134,25 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
         restoring(value.toString());
         Intent oldIntent = new Intent(StartActivity.this, FragmentActivity.class);
         startActivity(oldIntent);
+    }
+
+    public void onListItemsSelected(CharSequence[] values, int[] selectedPositions, int requestCode) {
+        SharedPreferences sharedRecords = getSharedPreferences("EventRecords", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedRecords.edit();
+        Set<String> set = sharedRecords.getStringSet("records", null);
+        if (set != null && set.isEmpty() == false) {
+            ArrayList<String> recordlist = new ArrayList<String>(set);
+            Collections.sort(recordlist, String.CASE_INSENSITIVE_ORDER);
+            for (int i : selectedPositions) {
+                String selected = recordlist.get(i);
+                Log.i("checkLog", "Selected " + selected);
+                recordlist.remove(i);
+                editor.remove("record_"+selected);
+            }
+            Set<String> records = new HashSet<String>(recordlist);
+            editor.putStringSet("records", records);
+            editor.apply();
+        }
     }
 
     private void exportHistory()

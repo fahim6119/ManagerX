@@ -33,6 +33,10 @@ Version 0.7 : 11:55 AM 12-Jul-16
 - Add new item in menu midway 
 - Changed exported file format
 
+Version 0.8 : 11:56 AM 15-Jul-16
+- Clear Records
+- 3rd party credits in credits section
+
 Unimplemented Features :
 - Share APK
 
