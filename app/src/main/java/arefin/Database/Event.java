@@ -17,6 +17,11 @@ public class Event
         this.timestamp=timeStamp;
     }
 
+    Event()
+    {
+
+    }
+
     public String toString()
     {
         StringBuilder sb=new StringBuilder();

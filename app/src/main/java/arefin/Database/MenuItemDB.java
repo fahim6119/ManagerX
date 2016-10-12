@@ -34,6 +34,7 @@ public class MenuItemDB {
     public int insertMenu(MenuItem menuItem) {
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_MENU_EVENT_ID,menuItem.eventID);
         contentValues.put(KEY_MENU_DESCRIPTION, menuItem.description);
         contentValues.put(KEY_MENU_PRICE, menuItem.price);
         long row = db.insert(MenuItem.TABLE, null, contentValues);

@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by Arefin on 12-Oct-16.
  */
@@ -90,6 +92,107 @@ public class EventDB
         DatabaseManager.getInstance().closeDatabase(); // Closing database connection
     }
 
+    public Event getEventByID(int ID)
+    {
+        //Open connection to read only
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        String selectQuery =  "SELECT  " +
+                KEY_EVENT_ID + "," +
+                KEY_EVENT_NAME + "," +
+                KEY_EVENT_PLACE + "," +
+                KEY_EVENT_TIMESTAMP +
+                " FROM " + Event.TABLE
+                + " WHERE " +
+                KEY_EVENT_ID + "=?";// It's a good practice to use parameter ?, instead of concatenate string
 
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(ID) } );
+
+        Event event = null;
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+                event=new Event();
+                event.serial=cursor.getInt(cursor.getColumnIndex(KEY_EVENT_ID));
+                event.name=cursor.getString(cursor.getColumnIndex(KEY_EVENT_NAME));
+                event.place=cursor.getString(cursor.getColumnIndex(KEY_EVENT_PLACE));
+                event.timestamp=cursor.getString(cursor.getColumnIndex(KEY_EVENT_TIMESTAMP));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        DatabaseManager.getInstance().closeDatabase();
+        return event;
+    }
+
+    public Event getEventByName(String name)
+    {
+        //Open connection to read only
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        String selectQuery =  "SELECT  " +
+                KEY_EVENT_ID + "," +
+                KEY_EVENT_NAME + "," +
+                KEY_EVENT_PLACE + "," +
+                KEY_EVENT_TIMESTAMP +
+                " FROM " + Event.TABLE
+                + " WHERE " +
+                KEY_EVENT_NAME + "=?";// It's a good practice to use parameter ?, instead of concatenate string
+
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(name) } );
+
+        Event event = null;
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+                event=new Event();
+                event.serial=cursor.getInt(cursor.getColumnIndex(KEY_EVENT_ID));
+                event.name=cursor.getString(cursor.getColumnIndex(KEY_EVENT_NAME));
+                event.place=cursor.getString(cursor.getColumnIndex(KEY_EVENT_PLACE));
+                event.timestamp=cursor.getString(cursor.getColumnIndex(KEY_EVENT_TIMESTAMP));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        DatabaseManager.getInstance().closeDatabase();
+        return event;
+    }
+
+    public ArrayList<Event> getAllEvents()
+    {
+        //Open connection to read only
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        String selectQuery =  "SELECT  " +
+                KEY_EVENT_ID + "," +
+                KEY_EVENT_NAME + "," +
+                KEY_EVENT_PLACE + "," +
+                KEY_EVENT_TIMESTAMP +
+                " FROM " + Event.TABLE;
+
+        //Student student = new Student();
+        ArrayList<Event> eventList = new ArrayList<Event>();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+                Event event=new Event();
+                event.serial=cursor.getInt(cursor.getColumnIndex(KEY_EVENT_ID));
+                event.name=cursor.getString(cursor.getColumnIndex(KEY_EVENT_NAME));
+                event.place=cursor.getString(cursor.getColumnIndex(KEY_EVENT_PLACE));
+                event.timestamp=cursor.getString(cursor.getColumnIndex(KEY_EVENT_TIMESTAMP));
+
+                eventList.add(event);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        DatabaseManager.getInstance().closeDatabase();
+        return eventList;
+    }
 
 }
