@@ -2,6 +2,9 @@ package arefin;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -32,7 +35,6 @@ public class SavedEvent
     SavedEvent(Context context) {
         initialize(context);
     }
-
     SavedEvent()
     {
 
@@ -40,16 +42,32 @@ public class SavedEvent
 
     public void initialize(Context context)
     {
+        /*
+        dbHelp dbHelper = new dbHelp(context);
+        dbWrite= dbHelper.getWritableDatabase();
+        dbRead = dbHelper.getReadableDatabase();
+        */
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         List<String> description;
         List<Integer> price;
         ArrayList<String> userList=new ArrayList<>();
         if(preferences.contains("name")) {
             name = preferences.getString("name", null);
+            name=name.replace(' ','_') ;
             event_no = preferences.getInt("event_no", 1);
             timestamp = preferences.getString("timestamp", null);
             //String timestamp = new Timestamp(System.currentTimeMillis()).toString();
             place = preferences.getString("place", null);
+            /*
+            Cursor cursor = dbRead.query("Event_table",
+                    new String[]{"_id", "Event_name", "Place", "TimeStamp"},
+                    "Event_name = ?",
+                    new String[]{name},
+                    null, null, null);
+            if (cursor == null)
+                dbHelper.insertEvent(name, place, timestamp);
+                */
         }
 
         if(preferences.contains("itemNum"))
@@ -57,7 +75,6 @@ public class SavedEvent
             itemNum = preferences.getInt("itemNum", 0);
 
             menuSet = new ArrayList<>(itemNum);
-
 
             if(preferences.contains("users"))
             {
@@ -89,6 +106,19 @@ public class SavedEvent
                     orderer.add(new ArrayList<String>(menuSet.get(l)));
                     Collections.sort(orderer.get(l), String.CASE_INSENSITIVE_ORDER);
                 }
+                String order_table=name+"_order";
+                /*
+                dbRead.execSQL("DROP TABLE IF EXISTS "+order_table);
+                dbHelper.createOrderTable(dbRead,order_table);
+                for(int i=0;i<itemNum;i++)
+                {
+                    for(int j=0;j<orderer.get(i).size();j++)
+                    {
+                        String name=orderer.get(i).get(j);
+                        dbHelper.insertOrder(order_table,i,name,0,1);
+                    }
+                }
+                */
             }
 
             servedList= new String[itemNum];
@@ -113,7 +143,23 @@ public class SavedEvent
                     due.put(name,valDue);
                 }
             }
-
+            String attendee_table=name+"_attendee";
+            /*
+            dbRead.execSQL("DROP TABLE IF EXISTS "+attendee_table);
+            dbHelper.createAttendeeTable(dbRead,attendee_table);
+            for(int i=0;i<userList.size();i++)
+            {
+                //dbHelper.insertAttendee(attendee_table,userList.get(i),total.get(i),paid.get(i),due.get(i));
+            }
+            String menu_table=name+"_menu";
+            dbRead.execSQL("DROP TABLE IF EXISTS "+menu_table);
+            dbHelper.createMenuTable(dbRead,menu_table);
+            for(int i=0;i<menuSet.size();i++)
+            {
+                dbHelper.insertMenu(menu_table,description.get(i),price.get(i));
+            }
+            dbHelper.close();
+            */
         }
     }
 

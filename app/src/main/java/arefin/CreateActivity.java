@@ -2,6 +2,8 @@ package arefin;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -61,11 +63,13 @@ public class CreateActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), name+" Event Created",
                         Toast.LENGTH_LONG).show();
                 editor.putString("name", name);
-                editor.putString("timestamp",new Timestamp(System.currentTimeMillis()).toString());
+                String timeStamp=new Timestamp(System.currentTimeMillis()).toString();
+                editor.putString("timestamp",timeStamp);
                 editor.putString("place",place);
                 editor.putInt("event_no",event_no);
                 editor.putBoolean("backedup",false);
                 editor.apply();
+
                 Intent createIntent = new Intent(CreateActivity.this, AttendanceActivity.class);
                 startActivity(createIntent);
                 finish();

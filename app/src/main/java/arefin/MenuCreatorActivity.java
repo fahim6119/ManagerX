@@ -2,6 +2,8 @@ package arefin;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -130,7 +132,6 @@ public class MenuCreatorActivity extends AppCompatActivity {
             priceTemp=price[l].getText().toString();
             if(TextUtils.isEmpty(priceTemp))
             {
-
                 price[l].setError("Please enter the price");
                 return;
             }

@@ -3,6 +3,8 @@ package arefin;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -35,7 +37,7 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
     boolean update=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+       // SavedEvent savedEvent = new SavedEvent(getBaseContext());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
@@ -132,6 +134,7 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
     public void onListItemSelected(CharSequence value, int number, int requestCode) {
         Log.i("checkLog","Clicked on "+value);
         restoring(value.toString());
+
         Intent oldIntent = new Intent(StartActivity.this, FragmentActivity.class);
         startActivity(oldIntent);
     }

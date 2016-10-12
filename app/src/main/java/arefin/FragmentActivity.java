@@ -5,6 +5,8 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -283,6 +285,9 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
 
         else if (id == R.id.nav_order)
         {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor=preferences.edit();
+
             Intent createIntent = new Intent(FragmentActivity.this, ItemListActivity.class);
             startActivity(createIntent);
         }

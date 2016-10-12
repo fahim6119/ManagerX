@@ -2,6 +2,8 @@ package arefin;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
@@ -41,6 +43,7 @@ public class ItemListActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
         retrieve_sharedArray();
+
         selected=new int[itemNum][itemNum];
         firstTimeStartup=new boolean[itemNum];
         /*

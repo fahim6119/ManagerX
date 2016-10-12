@@ -3,6 +3,8 @@ package arefin;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,7 +35,6 @@ import arefin.dialogs.iface.IMultiChoiceListDialogListener;
 
 public class AttendanceActivity extends AppCompatActivity implements
         IMultiChoiceListDialogListener {
-
     ListView listView;
 
     //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
@@ -49,6 +50,8 @@ public class AttendanceActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collector);
+
+
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (preferences.contains("users"))
