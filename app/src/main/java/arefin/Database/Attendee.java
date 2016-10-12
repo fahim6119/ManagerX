@@ -7,10 +7,9 @@ package arefin.Database;
 public class Attendee {
     public static final String TABLE="Attendee_table";
 
-    String name;
-    int serial;
-    double total,paid;
-    int eventID;
+    public String name;
+    public int serial,eventID;
+    public double total,paid;
     public Attendee(int eventID,String name,double total,double paid)
     {
         this.eventID=eventID;
@@ -22,6 +21,14 @@ public class Attendee {
     Attendee()
     {
 
+    }
+
+    public Attendee(int eventID,String name)
+    {
+        this.eventID=eventID;
+        this.name=name;
+        this.total=0;
+        this.paid=0;
     }
     public double getDue()
     {

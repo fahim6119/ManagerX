@@ -23,20 +23,21 @@ public class OrderDB
 
 
     //ItemNumber, Ordered by, Served, Quantity
-    public void createOrderTable(SQLiteDatabase db, String Table)
+    public static String createTable()
     {
 
-        db.execSQL("create table " + Table + "( "
+        String CREATE_TABLE="create table " + Order.TABLE + "( "
                 + KEY_ORDER_ID +" INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_ORDER_MENU_ID +" INTEGER , "
                 + KEY_ORDER_EVENT_ID + " INTEGER, "
                 + KEY_ORDER_ATTENDEE_ID+" INTEGER , "
                 + KEY_ORDER_SERVED+" INTEGER, "
                 + KEY_ORDER_QUANTITY+" INTEGER "
-                +")");
+                +")";
+        return CREATE_TABLE;
     }
 
-    public int insertOrder(Order order)
+    public static int insertOrder(Order order)
     {
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         ContentValues contentValues = new ContentValues();
@@ -52,7 +53,7 @@ public class OrderDB
         return (int) row;
     }
 
-    public ArrayList<Order> getOrdersByEvent(int eventID)
+    public static ArrayList<Order> getOrdersByEvent(int eventID)
     {
         //Open connection to read only
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
@@ -96,7 +97,7 @@ public class OrderDB
     }
 
     //Get orders by a specific Person
-    public ArrayList<Order> getOrdersByAttendee(int attendeeID)
+    public static ArrayList<Order> getOrdersByAttendee(int attendeeID)
     {
         //Open connection to read only
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
@@ -140,7 +141,7 @@ public class OrderDB
     }
 
     //Get orders by a specific Person
-    public Order getItemOrderByAttendee(int attendeeID,int itemID)
+    public static Order getItemOrderByAttendee(int attendeeID,int itemID)
     {
         Order targetOrder=null;
         ArrayList<Order> orderList=getOrdersByAttendee(attendeeID);

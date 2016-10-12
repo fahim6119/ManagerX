@@ -21,7 +21,7 @@ public class MenuItemDB {
     public static final String KEY_MENU_PRICE = "price";   //Price of Item
 
     //ItemNumber, Description, Details
-    public String createMenuTable() {
+    public static String createTable() {
         String CREATE_TABLE = "create table " + MenuItem.TABLE + "( "
                 + KEY_MENU_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_MENU_EVENT_ID + " INTEGER, "
@@ -31,7 +31,7 @@ public class MenuItemDB {
         return CREATE_TABLE;
     }
 
-    public int insertMenu(MenuItem menuItem) {
+    public static int insertMenu(MenuItem menuItem) {
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_MENU_EVENT_ID,menuItem.eventID);
@@ -43,7 +43,7 @@ public class MenuItemDB {
         return (int) row;
     }
 
-    public ArrayList<MenuItem> getItemsByEvent(int eventID)
+    public static ArrayList<MenuItem> getItemsByEvent(int eventID)
     {
         //Open connection to read only
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
@@ -82,7 +82,7 @@ public class MenuItemDB {
         return itemList;
     }
 
-    public MenuItem getItemByID(int eventID,int ID)
+    public static MenuItem getItemByID(int eventID,int ID)
     {
         //Open connection to read only
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
@@ -119,7 +119,7 @@ public class MenuItemDB {
         return menuItem;
     }
 
-    public double getPriceByID(int eventID,int ID)
+    public static double getPriceByID(int eventID,int ID)
     {
         MenuItem menuItem=getItemByID(eventID,ID);
         return menuItem.price;

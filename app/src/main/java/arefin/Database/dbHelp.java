@@ -10,6 +10,7 @@ import arefin.app;
 
 public class dbHelp extends SQLiteOpenHelper{
     public static final String db_name = "MenuAssistant.db";
+    final static String LOG_TAG = "AREFIN";
 
     private static final int db_version = 1;
 
@@ -21,16 +22,19 @@ public class dbHelp extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        Log.i("Arefin","Started Creating DB");
+        Log.i(LOG_TAG,"Started Creating DB");
         try
         {
             db.execSQL(EventDB.createTable());
+            db.execSQL(AttendeeDB.createTable());
+            db.execSQL(MenuItemDB.createTable());
+            db.execSQL(OrderDB.createTable());
         }
         catch (Exception e)
         {
-            Log.i("Arefin","Exception while creating DB");
+            Log.i(LOG_TAG,"Exception while creating DB");
         }
-        Log.i("Arefin","Created DB");
+        Log.i(LOG_TAG,"Created DB");
 
     }
 
@@ -38,6 +42,9 @@ public class dbHelp extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldversion, int newversion)
     {
         db.execSQL("DROP TABLE IF EXISTS "+Event.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS "+Attendee.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS "+MenuItem.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS "+Order.TABLE);
         onCreate(db);
     }
 

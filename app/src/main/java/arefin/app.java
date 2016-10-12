@@ -13,6 +13,7 @@ import arefin.Database.dbHelp;
 public class app extends Application {
     private static Context context;
     private static dbHelp dbHelper;
+    public static int currentEventID;
 
     @Override
     public void onCreate() {
@@ -20,7 +21,6 @@ public class app extends Application {
         context = this.getApplicationContext();
         dbHelper = new dbHelp();
         DatabaseManager.initializeInstance(dbHelper);
-
     }
 
     public static Context getContext(){

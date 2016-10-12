@@ -22,10 +22,10 @@ public class AttendeeDB
     public static final String KEY_ATTENDEE_EVENT_ID = "event_id"; //Item Number
 
     //ID, name, total , paid
-    public void createAttendeeTable(SQLiteDatabase db, String attendeeTable)
+    public static String createTable()
     {
 
-        String CREATE_TABLE = "CREATE TABLE " + attendeeTable + "("
+        String CREATE_TABLE = "CREATE TABLE " + Attendee.TABLE + "("
                 + KEY_ATTENDEE_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + KEY_ATTENDEE_EVENT_ID + " INTEGER, "
                 + KEY_ATTENDEE_NAME +" TEXT , "
@@ -33,12 +33,12 @@ public class AttendeeDB
                 + KEY_ATTENDEE_PAID +" REAL  "
                 + " )";
 
-        db.execSQL(CREATE_TABLE);
+        return CREATE_TABLE;
     }
 
 
 
-    public int insertAttendee(Attendee attendee)
+    public static int insertAttendee(Attendee attendee)
     {
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         ContentValues contentValues = new ContentValues();
@@ -53,7 +53,7 @@ public class AttendeeDB
         return (int) row;
     }
 
-    public void deleteByName(int eventID,String attendeeName) {
+    public static void deleteByName(int eventID,String attendeeName) {
 
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         // It's a good practice to use parameter ?, instead of concatenate string
@@ -61,7 +61,7 @@ public class AttendeeDB
         DatabaseManager.getInstance().closeDatabase();  // Closing database connection
     }
 
-    public void deletebyID(int ID) {
+    public static void deletebyID(int ID) {
 
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         // It's a good practice to use parameter ?, instead of concatenate string
@@ -69,7 +69,7 @@ public class AttendeeDB
         DatabaseManager.getInstance().closeDatabase();  // Closing database connection
     }
 
-    public void deleteAll() {
+    public static void deleteAll() {
 
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         // It's a good practice to use parameter ?, instead of concatenate string
@@ -77,7 +77,7 @@ public class AttendeeDB
         DatabaseManager.getInstance().closeDatabase();  // Closing database connection
     }
 
-    public void update(Attendee attendee) {
+    public static void update(Attendee attendee) {
 
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
 
@@ -94,7 +94,7 @@ public class AttendeeDB
         DatabaseManager.getInstance().closeDatabase(); // Closing database connection
     }
 
-    public Attendee getAttendeeByID(int ID)
+    public static Attendee getAttendeeByID(int ID)
     {
         //Open connection to read only
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
@@ -130,7 +130,7 @@ public class AttendeeDB
         return attendee;
     }
 
-    public Attendee getAttendeeByName(int eventID,String name)
+    public static Attendee getAttendeeByName(int eventID,String name)
     {
         //Open connection to read only
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
@@ -170,7 +170,7 @@ public class AttendeeDB
     }
 
 
-    public ArrayList<String> getAllAttendees()
+    public static ArrayList<String> getAllAttendees()
     {
         //Open connection to read only
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
@@ -196,7 +196,7 @@ public class AttendeeDB
         return attendeeList;
     }
 
-    public ArrayList<Attendee> getAttendeesByEvent(int eventID)
+    public static ArrayList<Attendee> getAttendeesByEvent(int eventID)
     {
         //Open connection to read only
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();

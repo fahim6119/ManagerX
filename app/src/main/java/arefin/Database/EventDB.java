@@ -35,7 +35,7 @@ public class EventDB
         return CREATE_TABLE;
     }
 
-    public int insertEvent(Event event)
+    public static int insertEvent(Event event)
     {
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
 
@@ -50,7 +50,7 @@ public class EventDB
         return (int) row;
     }
 
-    public void deleteByName(String eventName) {
+    public static void deleteByName(String eventName) {
 
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         // It's a good practice to use parameter ?, instead of concatenate string
@@ -58,7 +58,7 @@ public class EventDB
         DatabaseManager.getInstance().closeDatabase();  // Closing database connection
     }
 
-    public void deletebyPlace(String place) {
+    public static void deletebyPlace(String place) {
 
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         // It's a good practice to use parameter ?, instead of concatenate string
@@ -66,7 +66,7 @@ public class EventDB
         DatabaseManager.getInstance().closeDatabase();  // Closing database connection
     }
 
-    public void deleteAll() {
+    public static void deleteAll() {
 
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         // It's a good practice to use parameter ?, instead of concatenate string
@@ -75,7 +75,7 @@ public class EventDB
     }
 
 
-    public void update(Event event) {
+    public static void update(Event event) {
 
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
 
@@ -92,7 +92,7 @@ public class EventDB
         DatabaseManager.getInstance().closeDatabase(); // Closing database connection
     }
 
-    public Event getEventByID(int ID)
+    public static Event getEventByID(int ID)
     {
         //Open connection to read only
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
@@ -126,7 +126,7 @@ public class EventDB
         return event;
     }
 
-    public Event getEventByName(String name)
+    public static Event getEventByName(String name)
     {
         //Open connection to read only
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
@@ -160,7 +160,7 @@ public class EventDB
         return event;
     }
 
-    public ArrayList<Event> getAllEvents()
+    public static ArrayList<Event> getAllEvents()
     {
         //Open connection to read only
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();

@@ -41,6 +41,13 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
+        //Saving in Preference
+        saveInPref();
+
+    }
+
+    public void saveInPref()
+    {
         SharedPreferences sharedRecords = getSharedPreferences("EventRecords", Context.MODE_PRIVATE);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor =sharedRecords.edit();
@@ -89,12 +96,14 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
     }
 
     public void onClickCreateButton(View v){
+
         exportHistory();
         SharedPreferences sharedRecords = getSharedPreferences("EventRecords", Context.MODE_PRIVATE);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String oldName=preferences.getString("name",null);
         if(sharedRecords.contains("record_"+oldName)==false)
             backingUp();
+
         Intent createIntent = new Intent(StartActivity.this, CreateActivity.class);
         startActivity(createIntent);
 

@@ -30,12 +30,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import arefin.Database.Attendee;
+import arefin.Database.AttendeeDB;
 import arefin.dialogs.fragment.ListDialogFragment;
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;
 
 public class AttendanceActivity extends AppCompatActivity implements
         IMultiChoiceListDialogListener {
     ListView listView;
+    int eventID;
+    ArrayList<Attendee> attendeeList;
 
     //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
     ArrayList<String> listItems=new ArrayList<String>();
@@ -50,14 +54,22 @@ public class AttendanceActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collector);
-
-
-
+        eventID=app.currentEventID;
+        /*
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (preferences.contains("users"))
         {
             Set<String> set = preferences.getStringSet("users", null);
             listItems=new ArrayList<String>(set);
+        }
+
+        */
+
+
+        attendeeList= AttendeeDB.getAttendeesByEvent(eventID);
+        for(int i=0;i<attendeeList.size();i++)
+        {
+            listItems.add(attendeeList.get(i).name);
         }
 
         listView=(ListView)findViewById(R.id.listView1);
@@ -121,6 +133,9 @@ public class AttendanceActivity extends AppCompatActivity implements
     public void updateUsername(int position,String userName)
     {
         listItems.set(position,userName);
+        Attendee attendee=attendeeList.get(position);
+        attendee.name=userName;
+        AttendeeDB.update(attendee);
         adapter.notifyDataSetChanged();
     }
 
@@ -128,18 +143,25 @@ public class AttendanceActivity extends AppCompatActivity implements
     public void updateList(String uName)
     {
         listItems.add(uName);
+        Attendee attendee=new Attendee(eventID,uName);
+        int serial=AttendeeDB.insertAttendee(attendee);
+        attendee.serial=serial;
+        attendeeList.add(attendee);
         adapter.notifyDataSetChanged();
         getSupportActionBar().setTitle("Attendees ( "+listItems.size()+ " )");
     }
 
     public void sendNext(View v)
     {
+
+        //Store list in Preference
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
         Set<String> set = new HashSet<String>();
         set.addAll(listItems);
         editor.putStringSet("users",set );
         editor.apply();
+
         Intent createIntent = new Intent(AttendanceActivity.this, MenuCreatorActivity.class);
         startActivity(createIntent);
         finish();
@@ -249,8 +271,12 @@ public class AttendanceActivity extends AppCompatActivity implements
     public void onListItemsSelected(CharSequence[] values, int[] selectedPositions, int choice) {
 
         int length=selectedPositions.length;
-        for(int i=0;i<length;i++) {
+        for(int i=0;i<length;i++)
+        {
             listItems.remove(selectedPositions[i]);
+            Attendee attendee=attendeeList.get(selectedPositions[i]);
+            attendeeList.remove(selectedPositions[i]);
+            AttendeeDB.deletebyID(attendee.serial);
         }
         if(length!=0)
             Toast.makeText(getBaseContext(), length+ " Attendee removed", Toast.LENGTH_SHORT).show();
