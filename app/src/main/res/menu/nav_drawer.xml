@@ -9,9 +9,9 @@
         app:showAsAction="never" />
     -->
     <item
-        android:id="@+id/action_favorite"
-        android:icon="@drawable/ic_menu_share"
-        android:title="Share"
+        android:id="@+id/action_menu_edit"
+        android:icon="@drawable/ic_restaurant"
+        android:title="Remove Menu Item"
         app:showAsAction="ifRoom"/>
 
 </menu>

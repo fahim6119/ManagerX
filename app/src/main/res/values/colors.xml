@@ -17,6 +17,7 @@
     <color name="bkCream">#e9e354</color>
     <color name="borderCream">#dfd720</color>
     <color name="textGray">#212121</color>
+    <color name="gray">#c6cdcd</color>
     <color name="mainKolaPata">#eceabb</color>
     <color name="mainWhite">#FFF</color>
     <color name="bkGray">#cac9c9</color>
@@ -30,7 +31,7 @@
     <color name="main31">#705cca</color>
     <color name="main41">#8d79e7</color>
     <color name="bkDarkCream">#dfd5a5</color>
-
+    <color name="textLightGray">#8a8a8a</color>
 
 
 </resources>

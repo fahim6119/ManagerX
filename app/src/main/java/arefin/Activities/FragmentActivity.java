@@ -1,16 +1,10 @@
-package arefin;
+package arefin.Activities;
 
 import android.app.Dialog;
 import android.app.FragmentManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,7 +13,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -35,17 +28,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.batfia.arefin.ManagerX.R;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import arefin.Database.Attendee;
 import arefin.Database.AttendeeDB;
@@ -53,7 +43,7 @@ import arefin.Database.EventDB;
 import arefin.Database.MenuItemDB;
 import arefin.Database.Order;
 import arefin.Database.OrderDB;
-import arefin.dialogs.fragment.DatePickerDialogFragment;
+import arefin.app;
 import arefin.dialogs.fragment.SimpleDialogFragment;
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;
 import arefin.dialogs.iface.ISimpleDialogListener;
@@ -100,7 +90,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_drawer);
 
-        eventID=app.currentEventID;
+        eventID= app.currentEventID;
 
         userlist=new ArrayList<>();
 
@@ -216,9 +206,10 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
                 drawer.openDrawer(GravityCompat.START);
                 return true;
 
-            case R.id.action_favorite:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
+            case R.id.action_menu_edit:
+                Intent createIntent = new Intent(FragmentActivity.this, MenuEditActivity.class);
+                startActivity(createIntent);
+                finish();
                 return true;
 
             default:
@@ -269,14 +260,6 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         else if (id == R.id.nav_members)
         {
             Intent createIntent = new Intent(FragmentActivity.this, AttendanceActivity.class);
-            createIntent.putExtra("Mode",1);
-            startActivity(createIntent);
-            finish();
-        }
-
-        else if (id == R.id.nav_items)
-        {
-            Intent createIntent = new Intent(FragmentActivity.this, MenuCreatorActivity.class);
             createIntent.putExtra("Mode",1);
             startActivity(createIntent);
             finish();
@@ -367,7 +350,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
             bundle.putInt("ItemSerial",menuItemList.get(i).serial );
             bundle.putInt("fragId",i);
             fragments[i]=new OrderFragment();
-            adapter.addFragment(fragments[i], "Item" + (i + 1));
+            adapter.addFragment(fragments[i], descList[i]);
             adapter.getItem(i).setArguments(bundle);
         }
         paymentFragment=new PaymentFragment();

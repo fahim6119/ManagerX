@@ -63,6 +63,14 @@ public class OrderDB
         DatabaseManager.getInstance().closeDatabase();  // Closing database connection
     }
 
+    public static void deleteOrderbyitemID(int itemID) {
+
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        // It's a good practice to use parameter ?, instead of concatenate string
+        db.delete(Order.TABLE, KEY_ORDER_MENU_ID + "= ?", new String[] { String.valueOf(itemID) });
+        DatabaseManager.getInstance().closeDatabase();  // Closing database connection
+    }
+
     public static void deleteOrderbyEvent(int eventID) {
 
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();

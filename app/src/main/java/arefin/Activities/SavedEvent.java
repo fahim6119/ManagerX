@@ -1,4 +1,4 @@
-package arefin;
+package arefin.Activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;

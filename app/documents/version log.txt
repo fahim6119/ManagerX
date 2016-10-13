@@ -43,6 +43,10 @@ Version 1.0 : 9:52 PM 13-Oct-16
 Version 1.1 : 11:51 PM 13-Oct-16
 - Suggestions of Attendees from past events
 
+Version 1.2 : 2:06 AM 14-Oct-16
+- Reset/Update Menu from Navigation Drawer
+- Edit/ Remove Menu Items from Order Fragments
+ 
 Unimplemented Features :
 - Share APK
 

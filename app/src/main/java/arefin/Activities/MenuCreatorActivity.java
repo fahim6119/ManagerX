@@ -1,9 +1,6 @@
-package arefin;
+package arefin.Activities;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.support.v4.app.*;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -20,10 +17,10 @@ import java.util.ArrayList;
 
 import arefin.Database.Attendee;
 import arefin.Database.AttendeeDB;
-import arefin.Database.Event;
 import arefin.Database.MenuItem;
 import arefin.Database.MenuItemDB;
 import arefin.Database.OrderDB;
+import arefin.app;
 
 public class MenuCreatorActivity extends AppCompatActivity {
     int eventID;
@@ -48,7 +45,10 @@ public class MenuCreatorActivity extends AppCompatActivity {
         if(getIntent().hasExtra("Mode"))
             mode=getIntent().getIntExtra("Mode",0);
         Log.i("checkLog","Mode is "+mode);
-        eventID=app.currentEventID;
+
+        //Mode=1 means You can't add or remove items..only edit them
+
+        eventID= app.currentEventID;
         getSupportActionBar().setTitle("Menu Items");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         itemNum=0;
@@ -144,11 +144,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
             {
                 for (int l = 0; l < oldNum; l++) {
                     description[l].setText(descList[l]);
-                    description[l].setFocusable(false);
-                    description[l].setFocusableInTouchMode(true);
                     price[l].setText(String.format( "%.2f", priceList[l] ));
-                    price[l].setFocusable(false);
-                    price[l].setFocusableInTouchMode(true);
                 }
             }
         }
@@ -193,7 +189,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
                 menuItem.price = priceList[i];
                 MenuItemDB.update(menuItem);
             }
-            Intent createIntent = new Intent(MenuCreatorActivity.this, FragmentActivity.class);
+            Intent createIntent = new Intent(MenuCreatorActivity.this, arefin.Activities.FragmentActivity.class);
             startActivity(createIntent);
         }
         else

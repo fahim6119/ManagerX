@@ -1,4 +1,4 @@
-package arefin;
+package arefin.Activities;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -22,9 +22,7 @@ import android.widget.Toast;
 import com.batfia.arefin.ManagerX.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import arefin.Database.Attendee;
 import arefin.Database.AttendeeDB;
@@ -32,6 +30,7 @@ import arefin.Database.MenuItem;
 import arefin.Database.MenuItemDB;
 import arefin.Database.Order;
 import arefin.Database.OrderDB;
+import arefin.app;
 
 /**
  * Created by Arefin on 08-Jul-16.
@@ -91,7 +90,7 @@ public class PaymentFragment extends Fragment
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        eventID=app.currentEventID;
+        eventID= app.currentEventID;
         rootView = inflater.inflate(R.layout.fragment_payment, container, false);
         attendeeList=new ArrayList<>();
         retrieve_sharedArray();
@@ -259,10 +258,13 @@ class myAdapter extends BaseAdapter {
         text.setText(attendee.name);
         TextView paidText = (TextView) vi.findViewById(R.id.userPaid);
         paidText.setText("Paid : "+String.format( "%.2f", attendee.paid ));
+        paidText.setTextSize(12);
         TextView dueText = (TextView) vi.findViewById(R.id.userDue);
         dueText.setText("Due : "+String.format( "%.2f", due.get(position)));
+        dueText.setTextSize(12);
         TextView totalText = (TextView) vi.findViewById(R.id.userTotal);
         totalText.setText("Total : "+String.format( "%.2f", attendee.total ));
+        totalText.setTextSize(12);
         return vi;
     }
 }

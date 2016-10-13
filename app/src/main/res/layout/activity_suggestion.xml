@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/bkDarkCream"
-    tools:context="arefin.Database.SuggestionActivity">
+    tools:context="arefin.Activities.SuggestionActivity">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -1,9 +1,6 @@
-package arefin;
+package arefin.Activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +10,6 @@ import android.widget.AbsListView;
 import android.widget.Toast;
 
 import com.batfia.arefin.ManagerX.R;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,14 +17,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import arefin.Database.Event;
 import arefin.Database.EventDB;
-import arefin.Database.SuggestionActivity;
+import arefin.app;
 import arefin.dialogs.fragment.ListDialogFragment;
 import arefin.dialogs.iface.IListDialogListener;
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;

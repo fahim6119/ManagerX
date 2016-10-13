@@ -1,15 +1,11 @@
-package arefin;
+package arefin.Activities;
 
 /**
  * Created by Arefin on 03-Jul-16.
  */
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -24,7 +20,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.batfia.arefin.ManagerX.R;
 
@@ -34,6 +29,7 @@ import arefin.Database.MenuItem;
 import arefin.Database.MenuItemDB;
 import arefin.Database.Order;
 import arefin.Database.OrderDB;
+import arefin.app;
 import arefin.dialogs.fragment.ListDialogFragment;
 
 public class OrderFragment extends Fragment implements View.OnClickListener {
@@ -77,7 +73,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_list, container, false);
         frag_id = getArguments().getInt("fragId");
-        eventID=app.currentEventID;
+        eventID= app.currentEventID;
         itemID=getArguments().getInt("ItemSerial");
 
         retrieve_sharedArray();
@@ -92,7 +88,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         listOrders.toArray(orders);
         Log.i("checkLog","for fragment "+frag_id+" orders "+orderList.size());
         fragment_detail = (TextView) rootView.findViewById(R.id.frag_detail_view);
-        fragment_detail.setText(descList[frag_id]+"(" + orders.length + "), Price " + priceList[frag_id]);
+        fragment_detail.setText("Ordered by "+ orders.length + ", Price " + priceList[frag_id]);
         listView = (ListView) rootView.findViewById(R.id.listView);
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_multiple_choice, listOrders);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);

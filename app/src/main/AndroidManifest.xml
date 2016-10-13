@@ -11,37 +11,37 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="arefin.StartActivity">
+        <activity android:name="arefin.Activities.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="arefin.CreateActivity">
+        <activity android:name="arefin.Activities.CreateActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="arefin.StartActivity" />
+                android:value="arefin.Activities.StartActivity" />
         </activity>
-        <activity android:name="arefin.AttendanceActivity">
+        <activity android:name="arefin.Activities.AttendanceActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="arefin.StartActivity" />
+                android:value="arefin.Activities.StartActivity" />
         </activity>
         <activity
-            android:name="arefin.ItemListActivity"
+            android:name="arefin.Activities.ItemListActivity"
             android:label="@string/title_activity_item_list">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="arefin.MenuCreatorActivity" />
+                android:value="arefin.Activities.MenuCreatorActivity" />
         </activity>
-        <activity android:name="arefin.MenuCreatorActivity">
+        <activity android:name="arefin.Activities.MenuCreatorActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="arefin.AttendanceActivity" />
+                android:value="arefin.Activities.AttendanceActivity" />
         </activity>
         <activity
-            android:name="arefin.FragmentActivity"
+            android:name="arefin.Activities.FragmentActivity"
             android:label="Orders"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -55,18 +55,26 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="arefin.ItemListActivity" />
+                android:value="arefin.Activities.ItemListActivity" />
         </activity>
-        <activity android:name="arefin.CreditsActivity" />
-        <activity android:name="arefin.HistoryActivity" />
+        <activity android:name="arefin.Activities.CreditsActivity" />
+        <activity android:name="arefin.Activities.HistoryActivity" />
         <activity
-            android:name="arefin.Database.SuggestionActivity"
+            android:name="arefin.Activities.SuggestionActivity"
             android:label="@string/title_activity_suggestion"
-            android:parentActivityName="arefin.AttendanceActivity"
+            android:parentActivityName="arefin.Activities.AttendanceActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="arefin.AttendanceActivity" />
+                android:value="arefin.Activities.AttendanceActivity" />
+        </activity>
+        <activity
+            android:name="arefin.Activities.MenuEditActivity"
+            android:label="@string/title_activity_menu_edit"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="arefin.Activities.FragmentActivity" />
         </activity>
     </application>
 

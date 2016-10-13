@@ -14,14 +14,9 @@
                 android:title="Attendees" />
 
             <item
-                android:id="@+id/nav_items"
-                android:icon="@drawable/ic_restaurant"
-                android:title="Edit Menu Items" />
-
-            <item
                 android:id="@+id/nav_menu"
                 android:icon="@drawable/ic_restaurant"
-                android:title="Add Menu Item" />
+                android:title="Update Menu" />
 
             <item
                 android:id="@+id/nav_order"

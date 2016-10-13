@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:background="@android:color/transparent"
+    tools:context="arefin.Activities.MenuEditActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bkDarkCream"
+        android:orientation="vertical">
+
+        <TextView
+            android:text="Menu Items"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:id="@+id/textView5"
+            android:background="@color/primaryColor"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textSize="24sp"
+            android:textAlignment="center"
+            android:textStyle="normal|bold"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:text="Single Tap to Edit, Long Press to Delete"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/textView6"
+            android:textColor="@color/textGray"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textSize="14dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/primaryColor"/>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:id="@+id/menu_listview"
+            android:divider="@color/primaryColor"
+            android:dividerHeight="1dip"
+            android:layout_height="390dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

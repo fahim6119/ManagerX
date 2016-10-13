@@ -1,11 +1,7 @@
-package arefin;
+package arefin.Activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,6 +21,7 @@ import arefin.Database.MenuItem;
 import arefin.Database.MenuItemDB;
 import arefin.Database.Order;
 import arefin.Database.OrderDB;
+import arefin.app;
 import arefin.dialogs.fragment.ListDialogFragment;
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;
 
@@ -46,11 +43,11 @@ public class ItemListActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
-        eventID=app.currentEventID;
+        eventID= app.currentEventID;
 
         retrieve_sharedArray();
 
-        selected=new int[itemNum][itemNum];
+        selected=new int[itemNum][attendeeList.size()];
         firstTimeStartup=new boolean[itemNum];
         attendeeList= AttendeeDB.getAttendeesByEvent(eventID);
         users=new String[attendeeList.size()];
