@@ -37,6 +37,12 @@ Version 0.8 : 11:56 AM 15-Jul-16
 - Clear Records
 - 3rd party credits in credits section
 
+Version 1.0 : 9:52 PM 13-Oct-16
+- Removed Shared Preferences completely, backbone rebuilt on sqlite database
+
+Version 1.1 : 11:51 PM 13-Oct-16
+- Suggestions of Attendees from past events
+
 Unimplemented Features :
 - Share APK
 
