@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class EventDB
 {
-    final static String LOG_TAG="AREFIN";
+    final static String LOG_TAG="checkLog";
     public String AttendeeTable,MenuTable,OrderTable;
 
     public static final String KEY_EVENT_ID="_id";
@@ -52,18 +52,19 @@ public class EventDB
 
     public static void deleteByName(String eventName) {
 
+        deleteEntriesforEvent(eventName);
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         // It's a good practice to use parameter ?, instead of concatenate string
         db.delete(Event.TABLE, KEY_EVENT_NAME + "= ?", new String[] { String.valueOf(eventName) });
         DatabaseManager.getInstance().closeDatabase();  // Closing database connection
     }
 
-    public static void deletebyPlace(String place) {
-
-        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
-        // It's a good practice to use parameter ?, instead of concatenate string
-        db.delete(Event.TABLE, KEY_EVENT_PLACE + "= ?", new String[] { String.valueOf(place) });
-        DatabaseManager.getInstance().closeDatabase();  // Closing database connection
+    public static void deleteEntriesforEvent(String eventName)
+    {
+        int id=getEventByName(eventName).serial;
+        AttendeeDB.deletebyEvent(id);
+        MenuItemDB.deleteItembyEvent(id);
+        OrderDB.deleteOrderbyEvent(id);
     }
 
     public static void deleteAll() {

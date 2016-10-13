@@ -8,9 +8,9 @@ public class Event
 {
     public static final String TABLE="event";
 
-    String name, place, timestamp;
-    int serial;
-    Event(String name,String place, String timeStamp)
+    public String name, place, timestamp;
+    public int serial;
+    public Event(String name,String place, String timeStamp)
     {
         this.name=name;
         this.place=place;

@@ -18,6 +18,9 @@ import com.batfia.arefin.MenuAssistant.R;
 
 import java.sql.Timestamp;
 
+import arefin.Database.Event;
+import arefin.Database.EventDB;
+
 /*
 cd A:/Android_SDK/platform-tools/
 adb shell
@@ -47,13 +50,6 @@ public class CreateActivity extends AppCompatActivity {
         amountEnter=(Button)findViewById(R.id.amountEnter);
         amount=100;
 
-        name="@strings/database_name";
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        event_no=preferences.getInt("event_no",0)+1;
-        Log.i("checkLog","event No "+event_no);
-        final SharedPreferences.Editor editor = preferences.edit();
-        editor.clear();
-        editor.apply();
         amountEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,14 +58,11 @@ public class CreateActivity extends AppCompatActivity {
                 place=locVal.getText().toString();
                 Toast.makeText(getBaseContext(), name+" Event Created",
                         Toast.LENGTH_LONG).show();
-                editor.putString("name", name);
                 String timeStamp=new Timestamp(System.currentTimeMillis()).toString();
-                editor.putString("timestamp",timeStamp);
-                editor.putString("place",place);
-                editor.putInt("event_no",event_no);
-                editor.putBoolean("backedup",false);
-                editor.apply();
-
+                Event event=new Event(name,place,timeStamp);
+                event_no= EventDB.insertEvent(event);
+                event.serial=event_no;
+                app.currentEventID=event_no;
                 Intent createIntent = new Intent(CreateActivity.this, AttendanceActivity.class);
                 startActivity(createIntent);
                 finish();

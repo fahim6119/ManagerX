@@ -42,7 +42,7 @@ public class AttendanceActivity extends AppCompatActivity implements
     ArrayList<Attendee> attendeeList;
 
     //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
-    ArrayList<String> listItems=new ArrayList<String>();
+    ArrayList<String> listItems;
 
     //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
     ArrayAdapter<String> adapter;
@@ -55,17 +55,7 @@ public class AttendanceActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collector);
         eventID=app.currentEventID;
-        /*
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (preferences.contains("users"))
-        {
-            Set<String> set = preferences.getStringSet("users", null);
-            listItems=new ArrayList<String>(set);
-        }
-
-        */
-
-
+        listItems=new ArrayList<String>();
         attendeeList= AttendeeDB.getAttendeesByEvent(eventID);
         for(int i=0;i<attendeeList.size();i++)
         {
@@ -153,15 +143,6 @@ public class AttendanceActivity extends AppCompatActivity implements
 
     public void sendNext(View v)
     {
-
-        //Store list in Preference
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        Set<String> set = new HashSet<String>();
-        set.addAll(listItems);
-        editor.putStringSet("users",set );
-        editor.apply();
-
         Intent createIntent = new Intent(AttendanceActivity.this, MenuCreatorActivity.class);
         startActivity(createIntent);
         finish();
@@ -212,7 +193,7 @@ public class AttendanceActivity extends AppCompatActivity implements
 
     public void sortList()
     {
-        Collections.sort(listItems, String.CASE_INSENSITIVE_ORDER);
+        //Collections.sort(listItems, String.CASE_INSENSITIVE_ORDER);
         adapter.notifyDataSetChanged();
     }
 

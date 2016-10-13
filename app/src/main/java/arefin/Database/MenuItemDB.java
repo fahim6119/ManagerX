@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 
 public class MenuItemDB {
-    final static String LOG_TAG = "AREFIN";
+    final static String LOG_TAG = "checkLog";
 
     public static final String KEY_MENU_ID = "id"; //Item Number
     public static final String KEY_MENU_EVENT_ID = "event_id"; //Item Number
@@ -29,6 +29,22 @@ public class MenuItemDB {
                 + KEY_MENU_PRICE + " REAL "
                 + ")";
         return CREATE_TABLE;
+    }
+
+    public static void deleteItembyID(int ID) {
+
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        // It's a good practice to use parameter ?, instead of concatenate string
+        db.delete(MenuItem.TABLE, KEY_MENU_ID + "= ?", new String[] { String.valueOf(ID) });
+        DatabaseManager.getInstance().closeDatabase();  // Closing database connection
+    }
+
+    public static void deleteItembyEvent(int eventID) {
+
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        // It's a good practice to use parameter ?, instead of concatenate string
+        db.delete(MenuItem.TABLE, KEY_MENU_EVENT_ID + "= ?", new String[] { String.valueOf(eventID) });
+        DatabaseManager.getInstance().closeDatabase();  // Closing database connection
     }
 
     public static int insertMenu(MenuItem menuItem) {

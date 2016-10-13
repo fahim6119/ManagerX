@@ -18,11 +18,13 @@ import com.batfia.arefin.MenuAssistant.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
+import arefin.Database.Attendee;
+import arefin.Database.AttendeeDB;
+import arefin.Database.MenuItem;
+import arefin.Database.MenuItemDB;
+import arefin.Database.Order;
+import arefin.Database.OrderDB;
 import arefin.dialogs.fragment.ListDialogFragment;
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;
 
@@ -31,72 +33,51 @@ public class ItemListActivity extends AppCompatActivity implements
     boolean firstTimeStartup[];
     int[][] selected;
     int itemNum;
-    int[] priceList;
+    double[] priceList;
     String[] descList,users;
     LinearLayout.LayoutParams lp;
     LinearLayout menuLayout;
     Button[] menuItems;
-    static List<String> userlist;
-    ArrayList<ArrayList<String>> orderer;
+    ArrayList<MenuItem> menuItemList;
+    ArrayList<Attendee> attendeeList;
+    int eventID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
+        eventID=app.currentEventID;
+
         retrieve_sharedArray();
 
         selected=new int[itemNum][itemNum];
         firstTimeStartup=new boolean[itemNum];
-        /*
-        Bundle b=this.getIntent().getExtras();
-        descList=b.getStringArray("descList");
-        itemNum=b.getInt("itemNum");
-        priceList=b.getIntArray("priceList"); */
-
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (preferences.contains("users")) {
-            Set<String> set = preferences.getStringSet("users", null);
-            userlist = new ArrayList<String>(set);
-            Collections.sort(userlist, String.CASE_INSENSITIVE_ORDER);
-            users=new String[userlist.size()];
-            for (int i = 0; i < userlist.size(); i++) {
-                users[i]=userlist.get(i);
-            }
+        attendeeList= AttendeeDB.getAttendeesByEvent(eventID);
+        users=new String[attendeeList.size()];
+        for (int i = 0; i < attendeeList.size(); i++)
+        {
+            users[i]=attendeeList.get(i).name;
+            Log.i("checkLog","user "+users[i]);
         }
 
         getSupportActionBar().setTitle("Set Orders");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ViewGenerator();
 
-        orderer= new ArrayList<>();
-        for( int i = 0; i < itemNum; i++) {
-            orderer.add(new ArrayList<String>());
-        }
-        if(preferences.contains("menu_0"))
-        {
-            for(int l=0;l<itemNum;l++)
-            {
-                if(preferences.contains("menu_"+l)==false)
-                    return;
-                Set<String> set = preferences.getStringSet("menu_"+l, null);
-                orderer.set(l,new ArrayList<String>(set));
-                Collections.sort(orderer.get(l), String.CASE_INSENSITIVE_ORDER);
-            }
-        }
     }
 
 
     public void retrieve_sharedArray()
     {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        itemNum = preferences.getInt("itemNum", 0);
+        menuItemList= MenuItemDB.getItemsByEvent(eventID);
+        itemNum = menuItemList.size();
         descList = new String[itemNum];
+        priceList=new double[itemNum];
         for(int i=0; i<itemNum; i++)
-            descList[i]=preferences.getString("desc_" + i, null);
-        priceList=new int[itemNum];
-        for(int i=0; i<itemNum; i++)
-            priceList[i]=preferences.getInt("price_" + i, 0);
-
+        {
+            descList[i] = menuItemList.get(i).description;
+            priceList[i] = menuItemList.get(i).price;
+        }
     }
 
     public void ViewGenerator()
@@ -159,7 +140,6 @@ public class ItemListActivity extends AppCompatActivity implements
     public void onListItemsSelected(CharSequence[] values, int[] selectedPositions, int menuItemNumber) {
         selected[menuItemNumber]=selectedPositions;
         firstTimeStartup[menuItemNumber]=false;
-        orderer.get(menuItemNumber).clear();
         for(int i : selectedPositions){
             String selected=users[i];
             menuGenerator(menuItemNumber,selected);
@@ -169,29 +149,15 @@ public class ItemListActivity extends AppCompatActivity implements
 
     public void menuGenerator(int item, String name)
     {
-        orderer.get(item).add(name);
-        Log.i("checkLog","Item "+item+ " name "+name);
+        int attendeeID=AttendeeDB.getAttendeeByName(eventID,name).serial;
+        int menuID=menuItemList.get(item).serial;
+        Order order=new Order(eventID,menuID,attendeeID,0,1);
+        OrderDB.insertOrder(order);
+        Log.i("checkLog","Order Inserted : Item "+item+ " name "+name);
     }
 
     public void onClickNextButton(View v)
     {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-
-        for(int i=0;i<itemNum;i++) {
-            Set<String> set = new HashSet<String>();
-            set.addAll(orderer.get(i));
-            editor.putStringSet("menu_" + i, set);
-
-            /*
-            StringBuilder str = new StringBuilder();
-            for (int k = 0; k < selected[i].length; k++) {
-                str.append(selected[i][k]).append(",");
-            }
-            editor.putString("selected_"+i, str.toString()); */
-        }
-        editor.apply();
-
         Intent createIntent = new Intent(ItemListActivity.this,FragmentActivity.class);
        // createIntent.putExtras(b);
         startActivity(createIntent);

@@ -7,10 +7,10 @@ package arefin.Database;
 public class MenuItem
 {
     final static String TABLE="menu";
-    int serial, eventID;
-    String description;
-    double price;
-    MenuItem(int event,String description,int price)
+    public int serial, eventID;
+    public String description;
+    public double price;
+    public MenuItem(int event,String description,double price)
     {
         eventID=event;
         this.description=description;

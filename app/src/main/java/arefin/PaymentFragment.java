@@ -2,9 +2,7 @@ package arefin;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,21 +26,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import arefin.Database.Attendee;
+import arefin.Database.AttendeeDB;
+import arefin.Database.MenuItem;
+import arefin.Database.MenuItemDB;
+import arefin.Database.Order;
+import arefin.Database.OrderDB;
+
 /**
  * Created by Arefin on 08-Jul-16.
  */
 
 public class PaymentFragment extends Fragment
 {
-    int itemNum;
-    int[] priceList;
-    String[] descList,users;
-    public ArrayList<ArrayList<String>> orderer;
+    int eventID;
+    ArrayList<Attendee> attendeeList;
 
-    //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
-    ArrayList<String> listOrders = new ArrayList<String>();
-    ArrayList<Integer> paid= new ArrayList<>();
-    ArrayList<Integer> total= new ArrayList<>();
     //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
     ArrayAdapter<String> adapter;
 
@@ -51,26 +50,24 @@ public class PaymentFragment extends Fragment
     List<String> userlist=new ArrayList<String>();
     ListView listView;
     myAdapter mAdapter;
-    int userNum;
 
     public PaymentFragment() { }
 
-    public void addOrder(String name, int price)
+    public void addOrder(String name, double price)
     {
         int index=userlist.indexOf(name);
         if(index==-1)
             return;
-        int val=total.get(index)+price;
-        total.set(index,val);
+        double val=attendeeList.get(index).total+price;
+        attendeeList.get(index).total=val;
         mAdapter.notifyDataSetChanged();
-        Log.i("checkLog","Order received the name "+name+" with price "+price);
     }
 
-    public void removeOrder(String name, int price)
+    public void removeOrder(String name, double price)
     {
         int index=userlist.indexOf(name);
-        int val=total.get(index)-price;
-        total.set(index,val);
+        double val=attendeeList.get(index).total-price;
+        attendeeList.get(index).total=val;
         mAdapter.notifyDataSetChanged();
         Log.i("checkLog","Order received the name "+name+"  for removal "+price);
     }
@@ -84,18 +81,15 @@ public class PaymentFragment extends Fragment
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        eventID=app.currentEventID;
         rootView = inflater.inflate(R.layout.fragment_payment, container, false);
+        attendeeList=new ArrayList<>();
         retrieve_sharedArray();
         listView = (ListView) rootView.findViewById(R.id.listPayment);
        // adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, userlist);
-        mAdapter=new myAdapter(getActivity().getBaseContext(), userlist,total,paid);
-        for(int i=0;i<orderer.size();i++)
-        {
-            for(int j=0;j<orderer.get(i).size();j++)
-            {
-                addOrder(orderer.get(i).get(j),priceList[i]);
-            }
-        }
+        mAdapter=new myAdapter(getActivity().getBaseContext(), attendeeList);
+        setupOrders();
+
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -124,6 +118,8 @@ public class PaymentFragment extends Fragment
         final EditText amountPaid = (EditText) dialogView.findViewById(R.id.amountPaid);
         final TextView paid_textView=(TextView)dialogView.findViewById(R.id.paid_textView);
         final Button amountCancel=(Button) dialogView.findViewById(R.id.amountCancel);
+
+        paid_textView.setText("Total Amount Paid By "+oldName);
         amountCancel.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v) {
@@ -141,8 +137,8 @@ public class PaymentFragment extends Fragment
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                int amount=Integer.parseInt(amountStr);
-                paid.set(pos,amount);
+                double amount=Double.parseDouble(amountStr);
+                attendeeList.get(pos).paid+=amount;
                 mAdapter.notifyDataSetChanged();
                 //updateUsername(pos,userName);
                 dialog.dismiss();
@@ -155,87 +151,59 @@ public class PaymentFragment extends Fragment
     public void addVat(double vat,double discount)
     {
         double val=(vat-discount)*0.01;
-        for(int i=0;i<userNum;i++)
+        for(int i=0;i<attendeeList.size();i++)
         {
-            int x;
-            x=total.get(i);
-            int totalVal=x+ (int) Math.round(x * val);
-            x=paid.get(i);
-            int paidVal=x+ (int) Math.round(x * val);
-            paid.set(i,paidVal);
-            total.set(i,totalVal);
+            double x;
+            x=attendeeList.get(i).total;
+            double totalVal=x+ (int) Math.round(x * val);
+            attendeeList.get(i).total=totalVal;
         }
         mAdapter.notifyDataSetChanged();
     }
 
     public void retrieve_sharedArray()
     {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        itemNum = preferences.getInt("itemNum", 0);
-        descList = new String[itemNum];
-        orderer = new ArrayList<>();
-        for(int i=0; i<itemNum; i++)
-            descList[i]=preferences.getString("desc_" + i, null);
-        priceList=new int[itemNum];
-        for(int i=0; i<itemNum; i++)
-            priceList[i]=preferences.getInt("price_" + i, 0);
-
-        if (preferences.contains("users"))
+        userlist=new ArrayList<>();
+        attendeeList= AttendeeDB.getAttendeesByEvent(eventID);
+        for(int i=0;i<attendeeList.size();i++)
         {
-            Set<String> set = preferences.getStringSet("users", null);
-            userlist=new ArrayList<String>(set);
-            Collections.sort(userlist, String.CASE_INSENSITIVE_ORDER);
-            userNum=userlist.size();
-            paid=new ArrayList<>(userNum);
-            total=new ArrayList<>(userNum);
-            for(int i=0;i<userNum;i++)
-            {
-                paid.add(0);
-                total.add(0);
-            }
+            userlist.add(attendeeList.get(i).name);
         }
-
-        for(int l=0;l<itemNum;l++)
-        {
-            Set<String> set = preferences.getStringSet("menu_"+l, null);
-            orderer.add(new ArrayList<String>(set));
-            Collections.sort(orderer.get(l), String.CASE_INSENSITIVE_ORDER);
-        }
-
-
-        for(int i=0;i<userlist.size();i++)
-        {
-            String name=userlist.get(i);
-            if(preferences.contains("paid_"+name))
-            {
-                int val = preferences.getInt("paid_"+ name, 0);
-                paid.set(i, val);
-                Log.i("checkLog","paid_"+ name+" "+paid.get(i));
-            }
-        }
-
+        //Update Paid and total
     }
 
+    public void setupOrders()
+    {
+        ArrayList<MenuItem> menuItemList= MenuItemDB.getItemsByEvent(eventID);
+        for(int i=0;i<menuItemList.size();i++)
+        {
+            ArrayList<Order> orderList= OrderDB.getOrdersByItem(eventID,menuItemList.get(i).serial);
+            double price=menuItemList.get(i).price;
+            for(int k=0;k<orderList.size();k++)
+            {
+                int userID=orderList.get(k).attendeeID;
+                addOrder(AttendeeDB.getAttendeeByID(userID).name,price);
+            }
+        }
+    }
 
 }
 
 class myAdapter extends BaseAdapter {
 
     Context context;
-    List<String> username;
-    ArrayList<Integer> paid,due,total;
+    List<Attendee> attendees;
+    ArrayList<Double> due;
     private static LayoutInflater inflater = null;
 
-    public myAdapter(Context context, List<String> username,ArrayList<Integer>total,ArrayList<Integer> paid) {
+    public myAdapter(Context context, List<Attendee> attendees) {
         // TODO Auto-generated constructor stub
         this.context = context;
-        this.username = username;
-        this.total=total;
-        this.paid=paid;
-        due=new ArrayList<>(username.size());
-        for(int i=0;i<username.size();i++)
+        this.attendees=attendees;
+        due=new ArrayList<>(attendees.size());
+        for(int i=0;i<attendees.size();i++)
         {
-            int val=total.get(i)-paid.get(i);
+            double val=attendees.get(i).total-attendees.get(i).paid;
             due.add(val);
         }
         inflater = (LayoutInflater) context
@@ -245,13 +213,14 @@ class myAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return username.size();
+        return attendees.size();
     }
+
 
     @Override
     public Object getItem(int position) {
         // TODO Auto-generated method stub
-        return username.get(position);
+        return attendees.get(position).name;
     }
 
     @Override
@@ -266,19 +235,20 @@ class myAdapter extends BaseAdapter {
         View vi = convertView;
         if (vi == null)
             vi = inflater.inflate(R.layout.row, null);
-        for(int i=0;i<username.size();i++)
+        for(int i=0;i<attendees.size();i++)
         {
-            int val=total.get(i)-paid.get(i);
+            double val=attendees.get(i).total-attendees.get(i).paid;
             due.set(i,val);
         }
+        Attendee attendee=attendees.get(position);
         TextView text = (TextView) vi.findViewById(R.id.username);
-        text.setText(username.get(position));
+        text.setText(attendee.name);
         TextView paidText = (TextView) vi.findViewById(R.id.userPaid);
-        paidText.setText("Paid : "+Integer.toString(paid.get(position)));
+        paidText.setText("Paid : "+Double.toString(attendee.paid));
         TextView dueText = (TextView) vi.findViewById(R.id.userDue);
-        dueText.setText("Due : "+Integer.toString(due.get(position)));
+        dueText.setText("Due : "+Double.toString(due.get(position)));
         TextView totalText = (TextView) vi.findViewById(R.id.userTotal);
-        totalText.setText("Total : "+Integer.toString(total.get(position)));
+        totalText.setText("Total : "+Double.toString(attendee.total));
         return vi;
     }
 }

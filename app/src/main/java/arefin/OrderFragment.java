@@ -11,9 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -30,9 +28,17 @@ import android.widget.Toast;
 
 import com.batfia.arefin.MenuAssistant.R;
 
+import arefin.Database.Attendee;
+import arefin.Database.AttendeeDB;
+import arefin.Database.MenuItem;
+import arefin.Database.MenuItemDB;
+import arefin.Database.Order;
+import arefin.Database.OrderDB;
 import arefin.dialogs.fragment.ListDialogFragment;
 
 public class OrderFragment extends Fragment implements View.OnClickListener {
+
+    int eventID,itemID;
     onOrdered mCallback;
     ListView listView;
     ImageButton addButton, removeButton;
@@ -44,10 +50,10 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     int[] selections;
 
     int itemNum;
-    int[] priceList;
+    double[] priceList;
     String[] descList, users, orders;
+    ArrayList<Order> orderList;
     List<String> userlist;
-    ArrayList<ArrayList<String>> orderer;
     String[] newUsers;
 
     public static OrderFragment newInstance() {
@@ -70,10 +76,20 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_list, container, false);
-        retrieve_sharedArray();
-        listOrders = getArguments().getStringArrayList("orders");
-        orders = new String[listOrders.size()];
         frag_id = getArguments().getInt("fragId");
+        eventID=app.currentEventID;
+        itemID=getArguments().getInt("ItemSerial");
+
+        retrieve_sharedArray();
+        listOrders = new ArrayList<>();
+        for(int i=0;i<orderList.size();i++)
+        {
+            int userID=orderList.get(i).attendeeID;
+            listOrders.add(AttendeeDB.getAttendeeByID(userID).name);
+        }
+        orders = new String[listOrders.size()];
+        listOrders.toArray(orders);
+        Log.i("checkLog","for fragment "+frag_id+" orders "+orderList.size());
         fragment_detail = (TextView) rootView.findViewById(R.id.frag_detail_view);
         fragment_detail.setText("Ordered By " + orders.length + ", Price " + priceList[frag_id]);
         listView = (ListView) rootView.findViewById(R.id.listView);
@@ -82,6 +98,14 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         listView.setAdapter(adapter);
         clickCounter = 0;
 
+        for(int i=0;i<orderList.size();i++)
+        {
+            if(orderList.get(i).served==1)
+            {
+                Log.i("checkLog","set selection for "+orderList.get(i).serial);
+                listView.setItemChecked(i,true);
+            }
+        }
         addButton = (ImageButton) rootView.findViewById(R.id.imageButtonAdd);
         addButton.setOnClickListener(this);
 
@@ -103,12 +127,12 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
     // Container Activity must implement this interface
     public interface onOrdered{
-        public void onitemOrdered(String name,int fragment_id);
-        public void onitemRemoved(String name,int fragment_id);
+        public void onitemOrdered(String name,int fragment_id,Order order);
+        public void onitemRemoved(String name,int fragment_id,int orderID);
     }
 
     public void onListItemsSelected(CharSequence[] values, int[] selectedPositions, int choice) {
-
+        Log.i("checkLog","List Item Selected");
         ArrayList<String> newMembers = new ArrayList<>(selectedPositions.length);
 
         //if Add
@@ -142,33 +166,27 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public ArrayList<Integer> backUpSelected()
+    public void backUpSelected()
     {
-        ArrayList<Integer> selectedArray=new ArrayList();
-        if(listView==null)
-            return selectedArray;
         SparseBooleanArray checked = listView.getCheckedItemPositions();
         int size = checked.size(); // number of name-value pairs in the array
-        if(size==0) {
-            retrieve_sharedArray();
-            for(int i=0;selections!=null && i<selections.length;i++)
+        for (int i = 0; i < size; i++) {
+            int key = checked.keyAt(i);
+            boolean value = checked.get(key);
+            Order order=orderList.get(key);
+            if (value && order.served==0)
             {
-                selectedArray.add(selections[i]);
+                orderList.get(key).served=1;
+                OrderDB.update(orderList.get(key));
             }
-            Log.i("FahimOrders","Old back up for fragment " +frag_id+" sent");
-        }
-        else {
-            for (int i = 0; i < size; i++) {
-                int key = checked.keyAt(i);
-                boolean value = checked.get(key);
-                if (value) {
-                    selectedArray.add(key);
-                }
+            else if(value==false && order.served==1)
+            {
+                orderList.get(key).served = 0;
+                OrderDB.update(orderList.get(key));
             }
-            Log.i("FahimOrders","New back up for fragment " +frag_id+" sent");
+            Log.i("checkLog",frag_id+" "+i+" Checked "+key+" "+value);
         }
-
-        return selectedArray;
+        Log.i("FahimOrders","New back up for fragment " +frag_id+" sent");
     }
 
     @Override
@@ -189,24 +207,9 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
     public void add_member()
     {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
-        Set<String> userSet = preferences.getStringSet("users", null);
-        Set<String> newUserSet=new HashSet<String>();
-        newUserSet.addAll(userSet);
-        //updateUserList
-        userlist = new ArrayList<String>(userSet);
-
-        users=new String[userlist.size()];
-        for (int i = 0; i < userlist.size(); i++) {
-            users[i]=userlist.get(i);
-        }
-
-        //Find Remaining Users
-        Set<String> orderSet = new HashSet<String>();
-        orderSet.addAll(listOrders);
-        newUserSet.removeAll(orderSet);
-        ArrayList<String> newUserlist = new ArrayList<String>(newUserSet);
-        Collections.sort(newUserlist, String.CASE_INSENSITIVE_ORDER);
+        ArrayList<String> newUserlist = new ArrayList<String>();
+        newUserlist.addAll(userlist);
+        newUserlist.removeAll(listOrders);
         newUsers=new String[newUserlist.size()];
         for (int i = 0; i < newUserlist.size(); i++) {
             newUsers[i]=newUserlist.get(i);
@@ -228,7 +231,9 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         int counter=userSet.size();
         for(int i=0;i<counter;i++) {
             listOrders.add(userSet.get(i));
-            mCallback.onitemOrdered(userSet.get(i),frag_id);
+            int attendeeID=AttendeeDB.getAttendeeByName(eventID,userSet.get(i)).serial;
+            Order order=new Order(eventID,itemID,attendeeID,0,1);
+            mCallback.onitemOrdered(userSet.get(i),frag_id,order);
         }
         updateList();
         if(counter!=0)
@@ -239,8 +244,9 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     public void remove_member()
     {
         ListDialogFragment frag=new arefin.dialogs.fragment.ListDialogFragment();
-
+        Log.i("checkLog",frag_id+"List of Orders "+ listOrders.get(0)+" "+listOrders.get(1));
         int code=frag_id*10 +2 ; //2 for remove
+
         frag.createBuilder(getActivity().getBaseContext(), getActivity().getSupportFragmentManager())
                 .setTitle("Remove orders for Item "+(frag_id+1))
                 .setItems(orders)
@@ -253,7 +259,12 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     {
         //Update Order List for this item
         for(int i=0;i<userSet.size();i++)
-            mCallback.onitemRemoved(userSet.get(i),frag_id);
+        {
+            int index=listOrders.indexOf(userSet.get(i));
+            if(index==-1)
+                return;
+            mCallback.onitemRemoved(userSet.get(i), frag_id,orderList.get(index).serial );
+        }
         listOrders.removeAll(userSet);
         updateList();
         if(userSet.size()!=0)
@@ -263,63 +274,38 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
     public void updateList()
     {
-        //Update Shared Preference
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SharedPreferences.Editor editor = preferences.edit();
-
-        Set<String> set = new HashSet<String>();
-        set.addAll(listOrders);
-        editor.putStringSet("menu_" + frag_id, set);
-        editor.apply();
-
         //Update local variables & UI
         orders=new String[listOrders.size()];
-        orders = listOrders.toArray(orders);
+        listOrders.toArray(orders);
         fragment_detail.setText("Ordered By "+ listOrders.size()+ ", Price "+priceList[frag_id]);
         adapter.notifyDataSetChanged();
     }
 
     public void retrieve_sharedArray()
     {
-        Log.i("FahimOrders","Retrieving Preferences for Fragment "+frag_id);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
-        if(preferences.contains("name")==false)
-        {
-            Toast.makeText(getActivity().getBaseContext(), "No records Available",
-                    Toast.LENGTH_LONG).show();
-            return;
-        }
-        itemNum = preferences.getInt("itemNum", 0);
+        orderList= OrderDB.getOrdersByItem(eventID,itemID);
+        Log.i("checkLog",eventID+ " for Item "+itemID+" orders "+listOrders.size());
+        ArrayList<MenuItem> menuItemList= MenuItemDB.getItemsByEvent(eventID);
+        itemNum = menuItemList.size();
         descList = new String[itemNum];
-        orderer = new ArrayList<>();
+        priceList=new double[itemNum];
         for(int i=0; i<itemNum; i++)
-            descList[i]=preferences.getString("desc_" + i, null);
-        priceList=new int[itemNum];
-        for(int i=0; i<itemNum; i++)
-            priceList[i]=preferences.getInt("price_" + i, 0);
-
-        for(int l=0;l<itemNum;l++)
         {
-            Set<String> set = preferences.getStringSet("menu_"+l, null);
-            orderer.add(new ArrayList<String>(set));
-            Collections.sort(orderer.get(l), String.CASE_INSENSITIVE_ORDER);
+            descList[i] = menuItemList.get(i).description;
+            priceList[i] = menuItemList.get(i).price;
+        }
+        userlist=new ArrayList<>();
+        ArrayList<Attendee> attendeeList= AttendeeDB.getAttendeesByEvent(eventID);
+        for(int i=0;i<attendeeList.size();i++)
+        {
+            userlist.add(attendeeList.get(i).name);
         }
 
-        String savedString = preferences.getString("selected_"+frag_id, null);
-        Log.i("FahimOrders","selected for " +frag_id+ " "+savedString);
-        //StringTokenizer st = new StringTokenizer(savedString, ",");
-        //selections = new int[listOrders.size()];
-        if(savedString!=null) {
-            if (savedString.equals(""))
-                selections = null;
-            else {
-                List<String> items = new ArrayList<>(Arrays.asList(savedString.split(",")));
-                selections = new int[items.size()];
-                for (int i = 0; i < items.size(); i++) {
-                    selections[i] = Integer.parseInt(items.get(i));
-                }
-            }
+        users=new String[userlist.size()];
+        for (int i = 0; i < userlist.size(); i++) {
+            users[i]=userlist.get(i);
         }
+
     }
 
     @Override

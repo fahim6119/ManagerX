@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class AttendeeDB
 {
-    final static String LOG_TAG="AREFIN";
+    final static String LOG_TAG="checkLog";
 
     public static final String KEY_ATTENDEE_ID="_id";      //Attendee ID -int
     public static final String KEY_ATTENDEE_NAME="Name";    //Name of Attendee -string
@@ -62,10 +62,17 @@ public class AttendeeDB
     }
 
     public static void deletebyID(int ID) {
-
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         // It's a good practice to use parameter ?, instead of concatenate string
         db.delete(Attendee.TABLE, KEY_ATTENDEE_ID + "= ?", new String[] { String.valueOf(ID) });
+        DatabaseManager.getInstance().closeDatabase();  // Closing database connection
+    }
+
+    public static void deletebyEvent(int eventID) {
+
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        // It's a good practice to use parameter ?, instead of concatenate string
+        db.delete(Attendee.TABLE, KEY_ATTENDEE_EVENT_ID + "= ?", new String[] { String.valueOf(eventID) });
         DatabaseManager.getInstance().closeDatabase();  // Closing database connection
     }
 

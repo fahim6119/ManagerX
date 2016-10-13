@@ -10,7 +10,7 @@ public class Order
     public static final int UNSERVED=0;
 
     public static final String TABLE="Order_table";
-    int serial,itemID,served, quantity,attendeeID,eventID;
+    public int serial,itemID,served, quantity,attendeeID,eventID;
     public Order(int eventID,int itemID,int attendeeID,int served, int quantity)
     {
         this.eventID=eventID;
@@ -18,6 +18,13 @@ public class Order
         this.attendeeID=attendeeID;
         this.served=served;
         this.quantity=quantity;
+    }
+
+    public String toString()
+    {
+        StringBuilder sb=new StringBuilder();
+        sb.append("Serial "+serial+" Ordered for Event : "+eventID+" , Item : "+itemID+" attendee "+attendeeID+" Served "+served);
+        return sb.toString();
     }
 
     public Order()

@@ -1,10 +1,8 @@
 package arefin;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -17,8 +15,14 @@ import android.widget.LinearLayout;
 
 import com.batfia.arefin.MenuAssistant.R;
 
-public class MenuCreatorActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
+import arefin.Database.Event;
+import arefin.Database.MenuItem;
+import arefin.Database.MenuItemDB;
+
+public class MenuCreatorActivity extends AppCompatActivity {
+    int eventID;
     EditText itemNumText;
     Button itemNumButton,addMenuBtn;
     LinearLayout.LayoutParams lp,plp;
@@ -26,7 +30,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
     EditText[] price,description;
 
     int itemNum;
-    int[] priceList;
+    double[] priceList;
     String[] descList;
 
     @Override
@@ -34,6 +38,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_creator);
 
+        eventID=app.currentEventID;
         getSupportActionBar().setTitle("Menu Items");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         itemNum-=0;
@@ -54,23 +59,21 @@ public class MenuCreatorActivity extends AppCompatActivity {
     //retrieve Menu if already saved
     public void retrieve_sharedArray()
     {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if(preferences.contains("itemNum"))
+        ArrayList<MenuItem> menuItemList= MenuItemDB.getItemsByEvent(eventID);
+        itemNum = menuItemList.size();
+        descList = new String[itemNum];
+        priceList=new double[itemNum];
+        for(int i=0; i<itemNum; i++)
         {
-            itemNum = preferences.getInt("itemNum", 0);
-            descList = new String[itemNum];
-            for(int i=0; i<itemNum; i++)
-                descList[i]=preferences.getString("desc_" + i, null);
-            priceList=new int[itemNum];
-            for(int i=0; i<itemNum; i++)
-                priceList[i]=preferences.getInt("price_" + i, 0);
-            itemNumText.setText(Integer.toString(itemNum));
-            if(viewGenerator()) {
-                addMenuBtn.setVisibility(View.VISIBLE);
-                for (int l = 0; l < itemNum; l++) {
-                    description[l].setText(descList[l]);
-                    price[l].setText(Integer.toString(priceList[l]));
-                }
+            descList[i] = menuItemList.get(i).description;
+            priceList[i] = menuItemList.get(i).price;
+        }
+        itemNumText.setText(Integer.toString(itemNum));
+        if(viewGenerator()) {
+            addMenuBtn.setVisibility(View.VISIBLE);
+            for (int l = 0; l < itemNum; l++) {
+                description[l].setText(descList[l]);
+                price[l].setText(String.format( "%.2f", priceList[l] ));
             }
         }
     }
@@ -113,12 +116,11 @@ public class MenuCreatorActivity extends AppCompatActivity {
             int oldNum=itemNum;
             itemNum = Integer.parseInt(text);
             viewGenerator();
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            if(preferences.contains("itemNum") && oldNum<=itemNum)
+            if(oldNum<=itemNum)
             {
                 for (int l = 0; l < oldNum; l++) {
                     description[l].setText(descList[l]);
-                    price[l].setText(Integer.toString(priceList[l]));
+                    price[l].setText(String.format( "%.2f", priceList[l] ));
                 }
             }
         }
@@ -126,7 +128,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
 
     public void onClickNextButton(View v)
     {
-        priceList=new int[itemNum];
+        priceList=new double[itemNum];
         String priceTemp,descTemp;
         for(int l=0; l<itemNum; l++) {
             priceTemp=price[l].getText().toString();
@@ -152,21 +154,12 @@ public class MenuCreatorActivity extends AppCompatActivity {
             descList[l]= descTemp;
             Log.i("checkLog","item "+l +" : Description "+descList[l]);
         }
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("itemNum", itemNum);
-        for(int i=0;i<priceList.length; i++)
-            editor.putInt("price_" + i, priceList[i]);
-
-        for(int i=0;i<descList.length; i++)
-            editor.putString("desc_" + i, descList[i]);
-        editor.apply();
-        Bundle b=new Bundle();
-        b.putInt("itemNum",itemNum);
-        b.putIntArray("priceList",priceList);
-        b.putStringArray("descList",descList);
+        for(int i=0;i<itemNum;i++)
+        {
+            MenuItem menuItem=new MenuItem(eventID,descList[i],priceList[i]);
+            MenuItemDB.insertMenu(menuItem);
+        }
         Intent createIntent = new Intent(MenuCreatorActivity.this, ItemListActivity.class);
-        createIntent.putExtras(b);
         startActivity(createIntent);
     }
 }

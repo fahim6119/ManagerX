@@ -45,29 +45,37 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import arefin.Database.Attendee;
+import arefin.Database.AttendeeDB;
+import arefin.Database.EventDB;
+import arefin.Database.MenuItemDB;
+import arefin.Database.Order;
+import arefin.Database.OrderDB;
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;
 
 public class FragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,IMultiChoiceListDialogListener, OrderFragment.onOrdered {
 
     DrawerLayout drawer;
     int itemNum;
-    int[] priceList;
+    double[] priceList;
     String[] descList,users;
     List<String> userlist;
-    public ArrayList<ArrayList<String>> orderer;
     OrderFragment fragments[];
     PaymentFragment paymentFragment;
     int[] fragment_id;
     Adapter adapter;
+    int eventID;
+    ArrayList<arefin.Database.MenuItem> menuItemList;
 
-
-    public void onitemOrdered(String name,int frag_id)
+    public void onitemOrdered(String name,int frag_id,Order order)
     {
+        OrderDB.insertOrder(order);
         paymentFragment.addOrder(name,priceList[frag_id]);
     }
 
-    public void onitemRemoved(String name,int frag_id)
+    public void onitemRemoved(String name,int frag_id,int orderID)
     {
+        OrderDB.deleteOrderbyID(orderID);
         paymentFragment.removeOrder(name,priceList[frag_id]);
     }
 
@@ -86,6 +94,10 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_drawer);
+
+        eventID=app.currentEventID;
+
+        userlist=new ArrayList<>();
 
         retrieve_sharedArray();
         fragments=new OrderFragment[itemNum];
@@ -122,7 +134,6 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
     public void onBackPressed()
     {
         savePreference();
-        backingUp();
         //saveSharedPreferences();
         Intent i = new Intent(FragmentActivity.this, StartActivity.class);
         // set the new task and clear flags
@@ -133,61 +144,36 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
 
     public void savePreference()
     {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-
-        for(int i=0;i<itemNum;i++)
-        {
-            ArrayList<Integer> selection=fragments[i].backUpSelected();
-            //When a fragment hasn't been opened, don't change the current preference
-            StringBuilder str = new StringBuilder();
-            for (int k = 0; k < selection.size(); k++) {
-                str.append(selection.get(k)).append(",");
-            }
-            editor.putString("selected_"+i, str.toString());
+        for(int i=0;i<itemNum;i++) {
+            fragments[i].backUpSelected();
         }
-        editor.apply();
-        ArrayList<Integer> paid=paymentFragment.paid;
-        ArrayList<Integer> total=paymentFragment.total;
-        for(int i=0;i<paid.size();i++)
-        {
-            String name=userlist.get(i);
-            editor.putInt("paid_" + name, paid.get(i));
-            editor.putInt("total_" + name, total.get(i));
-            int due=total.get(i)-paid.get(i);
-            editor.putInt("due_"+name,due);
-        }
-        editor.apply();
     }
 
     public void retrieve_sharedArray()
     {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        itemNum = preferences.getInt("itemNum", 0);
+        menuItemList= MenuItemDB.getItemsByEvent(eventID);
+        if(menuItemList==null)
+            return;
+        itemNum = menuItemList.size();
         descList = new String[itemNum];
-        orderer = new ArrayList<>();
+        priceList=new double[itemNum];
         for(int i=0; i<itemNum; i++)
-            descList[i]=preferences.getString("desc_" + i, null);
-        priceList=new int[itemNum];
-        for(int i=0; i<itemNum; i++)
-            priceList[i]=preferences.getInt("price_" + i, 0);
-
-        if (preferences.contains("users")) {
-            Set<String> set = preferences.getStringSet("users", null);
-            userlist = new ArrayList<String>(set);
-            Collections.sort(userlist, String.CASE_INSENSITIVE_ORDER);
-            users=new String[userlist.size()];
-            for (int i = 0; i < userlist.size(); i++) {
-                users[i]=userlist.get(i);
-            }
-        }
-
-        for(int l=0;l<itemNum;l++)
         {
-            Set<String> set = preferences.getStringSet("menu_"+l, null);
-            orderer.add(new ArrayList<String>(set));
-            Collections.sort(orderer.get(l), String.CASE_INSENSITIVE_ORDER);
+            descList[i] = menuItemList.get(i).description;
+            priceList[i] = menuItemList.get(i).price;
         }
+        userlist=new ArrayList<>();
+        ArrayList<Attendee> attendeeList= AttendeeDB.getAttendeesByEvent(eventID);
+        for(int i=0;i<attendeeList.size();i++)
+        {
+            userlist.add(attendeeList.get(i).name);
+        }
+        users=new String[userlist.size()];
+        for (int i = 0; i < userlist.size(); i++) {
+            users[i]=userlist.get(i);
+        }
+
+        //Retrieve Saved Orders
     }
 
     @Override
@@ -285,9 +271,6 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
 
         else if (id == R.id.nav_order)
         {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor=preferences.edit();
-
             Intent createIntent = new Intent(FragmentActivity.this, ItemListActivity.class);
             startActivity(createIntent);
         }
@@ -332,7 +315,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         adapter = new Adapter(getSupportFragmentManager());
         for(int i=0;i<itemNum;i++) {
             Bundle bundle = new Bundle();
-            bundle.putStringArrayList("orders", orderer.get(i));
+            bundle.putInt("ItemSerial",menuItemList.get(i).serial );
             bundle.putInt("fragId",i);
             fragments[i]=new OrderFragment();
             adapter.addFragment(fragments[i], "Item" + (i + 1));
@@ -341,6 +324,12 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         paymentFragment=new PaymentFragment();
         adapter.addFragment(paymentFragment,"Payment ");
         viewPager.setAdapter(adapter);
+    }
+
+    public void saveEvent(View v)
+    {
+        Log.i("checkLog","Finished");
+        onBackPressed();
     }
 
     public void addVat(View v)
@@ -395,11 +384,8 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
     {
         savePreference();
         //SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if(preferences.contains("users")==false)
-            return;
         Log.i("FahimFile","File Writing began");
-        String name= preferences.getString("name",null);
+        String name= EventDB.getEventByID(eventID).name;
         String date= new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         // Create Folder
         //String folder_main = getBaseContext().getString(R.string.app_name);
@@ -429,67 +415,6 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         {
             Log.i("checkLog", e.toString()+ " "+getClass().getName());
         }
-    }
-
-
-    public void saveEvent(View v)
-    {
-        onBackPressed();
-    }
-
-    private void backingUp() {
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences sharedRecords = getSharedPreferences("EventRecords", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedRecords.edit();
-        String name = preferences.getString("name", null);
-        if (name == null)
-            return;
-
-        SavedEvent savedEvent = new SavedEvent(getBaseContext());
-
-        int itemNum = preferences.getInt("itemNum", 0);
-        String[] descList = new String[itemNum];
-        int[] priceList = new int[itemNum];
-        int[] paidList=new int[userlist.size()];
-        String[] servedList = new String[itemNum];
-        for (int i = 0; i < itemNum; i++) {
-            descList[i] = preferences.getString("desc_" + i, null);
-            priceList[i] = preferences.getInt("price_" + i, 0);
-            servedList[i] = preferences.getString("selected_" + i, null);
-        }
-        /*
-        for (int i = 0; i < userlist.size(); i++)
-        {
-            String userName=userlist.get(i);
-            paidList[i]=preferences.getInt("paid_"+userName,0);
-        }
-        String[] record=new String[5];
-        */
-        String[] record=new String[4];
-        record[0]=GsonInsert(savedEvent);
-        record[1]=GsonInsert(priceList);
-        record[2]=GsonInsert(descList);
-        record[3]=GsonInsert(servedList);
-       // record[4]=GsonInsert(paidList);
-        editor.putString("record_"+name,GsonInsert(record));
-
-
-        editor.commit();
-        if(record[0]!=null) {
-            SharedPreferences.Editor prefEditor = preferences.edit();
-            prefEditor.putBoolean("backedup",true);
-        }
-        Log.i("checkLog","JSON object written with "+ name);
-
-    }
-
-    public String GsonInsert(Object o)
-    {
-        Gson gson = new Gson();
-        String user_json = gson.toJson(o);
-        Log.i("checkLog","JSON object  "+user_json);
-        return user_json;
     }
 
 }
