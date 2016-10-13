@@ -47,7 +47,7 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 import arefin.dialogs.iface.ISimpleDialogCancelListener;
 import arefin.dialogs.util.TypefaceHelper;
 

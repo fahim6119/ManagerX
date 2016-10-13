@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.widget.TimePicker;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 import arefin.dialogs.core.BaseDialogFragment;
 
 import java.util.Calendar;

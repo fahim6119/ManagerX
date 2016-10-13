@@ -1,5 +1,7 @@
 package arefin.Database;
 
+import java.util.Comparator;
+
 /**
  * Created by Arefin on 12-Oct-16.
  */
@@ -22,6 +24,7 @@ public class Attendee {
     {
 
     }
+
 
     public Attendee(int eventID,String name)
     {

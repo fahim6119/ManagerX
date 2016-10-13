@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 import arefin.dialogs.core.BaseDialogBuilder;
 import arefin.dialogs.core.BaseDialogFragment;
 

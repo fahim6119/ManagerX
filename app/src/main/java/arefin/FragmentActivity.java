@@ -3,6 +3,7 @@ package arefin;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +19,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -32,7 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -51,9 +53,12 @@ import arefin.Database.EventDB;
 import arefin.Database.MenuItemDB;
 import arefin.Database.Order;
 import arefin.Database.OrderDB;
+import arefin.dialogs.fragment.DatePickerDialogFragment;
+import arefin.dialogs.fragment.SimpleDialogFragment;
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;
+import arefin.dialogs.iface.ISimpleDialogListener;
 
-public class FragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,IMultiChoiceListDialogListener, OrderFragment.onOrdered {
+public class FragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,IMultiChoiceListDialogListener, OrderFragment.onOrdered,ISimpleDialogListener {
 
     DrawerLayout drawer;
     int itemNum;
@@ -147,6 +152,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         for(int i=0;i<itemNum;i++) {
             fragments[i].backUpSelected();
         }
+        paymentFragment.updatetoDB();
     }
 
     public void retrieve_sharedArray()
@@ -253,26 +259,46 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
             startActivity(createIntent);
             finish();
         }
-        else if (id == R.id.nav_create) {
+        else if (id == R.id.nav_create)
+        {
+            savePreference();
             Intent createIntent = new Intent(FragmentActivity.this, CreateActivity.class);
             startActivity(createIntent);
+            finish();
         }
         else if (id == R.id.nav_members)
         {
             Intent createIntent = new Intent(FragmentActivity.this, AttendanceActivity.class);
+            createIntent.putExtra("Mode",1);
             startActivity(createIntent);
+            finish();
         }
 
         else if (id == R.id.nav_items)
         {
             Intent createIntent = new Intent(FragmentActivity.this, MenuCreatorActivity.class);
+            createIntent.putExtra("Mode",1);
             startActivity(createIntent);
+            finish();
+        }
+
+        else if (id == R.id.nav_menu)
+        {
+            Intent createIntent = new Intent(FragmentActivity.this, MenuCreatorActivity.class);
+            createIntent.putExtra("Mode",2);
+            startActivity(createIntent);
+            finish();
         }
 
         else if (id == R.id.nav_order)
         {
-            Intent createIntent = new Intent(FragmentActivity.this, ItemListActivity.class);
-            startActivity(createIntent);
+            SimpleDialogFragment.createBuilder(this,
+                    getSupportFragmentManager()).setTitle("Warning!")
+                    .setMessage("You want to reset all the orders?")
+                    .setPositiveButtonText("Yes")
+                    .setNegativeButtonText("No")
+                    .setCancelable(true)
+                    .show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -280,6 +306,29 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         return true;
     }
 
+    @Override
+    public void onNegativeButtonClicked(int requestCode) {
+
+    }
+
+    @Override
+    public void onNeutralButtonClicked(int requestCode) {
+
+    }
+
+    @Override
+    public void onPositiveButtonClicked(int requestCode) {
+        OrderDB.deleteOrderbyEvent(eventID);
+        ArrayList<Attendee> attendees= AttendeeDB.getAttendeesByEvent(eventID);
+        for(int i=0;i<attendees.size();i++)
+        {
+            attendees.get(i).total=0;
+            AttendeeDB.update(attendees.get(i));
+        }
+
+        Intent createIntent = new Intent(FragmentActivity.this, ItemListActivity.class);
+        startActivity(createIntent);
+    }
 
     static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragments = new ArrayList<>();
@@ -389,7 +438,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         String date= new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         // Create Folder
         //String folder_main = getBaseContext().getString(R.string.app_name);
-        String folder_main="MenuAssistant";
+        String folder_main="ManagerX";
         File f = new File(Environment.getExternalStorageDirectory(), folder_main);
         if (!f.exists()) {
             f.mkdirs();
@@ -398,12 +447,12 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         Log.i("checkLog","folder created");
         File myPath = new File(Environment.getExternalStorageDirectory()+ "/" + folder_main);
         File myFile = new File(myPath, name+"_"+date+".txt");
-
+        Log.i("checkLog","file created");
         try
         {
             FileWriter fw = new FileWriter(myFile);
             PrintWriter pw = new PrintWriter(fw);
-            SavedEvent savedEvent =new SavedEvent(getBaseContext());
+            SavedEvent savedEvent =new SavedEvent(name);
             pw.println(savedEvent.toString());
             pw.close();
             fw.close();
@@ -413,7 +462,7 @@ public class FragmentActivity extends AppCompatActivity implements NavigationVie
         }
         catch (Exception e)
         {
-            Log.i("checkLog", e.toString()+ " "+getClass().getName());
+            e.printStackTrace();
         }
     }
 

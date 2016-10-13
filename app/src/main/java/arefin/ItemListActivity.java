@@ -14,7 +14,7 @@ import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;

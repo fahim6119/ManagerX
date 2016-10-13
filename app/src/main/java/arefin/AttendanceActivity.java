@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
+import android.support.v4.app.*;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -23,10 +24,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -143,9 +145,21 @@ public class AttendanceActivity extends AppCompatActivity implements
 
     public void sendNext(View v)
     {
-        Intent createIntent = new Intent(AttendanceActivity.this, MenuCreatorActivity.class);
-        startActivity(createIntent);
-        finish();
+
+        Bundle b=getIntent().getExtras();
+        if(b==null)
+        {
+            Intent createIntent = new Intent(AttendanceActivity.this, MenuCreatorActivity.class);
+            startActivity(createIntent);
+            finish();
+        }
+        else
+        {
+            Intent createIntent = new Intent(AttendanceActivity.this, FragmentActivity.class);
+            startActivity(createIntent);
+            finish();
+        }
+
     }
 
     public void getAttendance()
@@ -193,9 +207,25 @@ public class AttendanceActivity extends AppCompatActivity implements
 
     public void sortList()
     {
-        //Collections.sort(listItems, String.CASE_INSENSITIVE_ORDER);
+        Collections.sort(attendeeList, new AttendeeComparator());
+        listItems.clear();
+        for(int i=0;i<attendeeList.size();i++)
+        {
+            listItems.add(attendeeList.get(i).name);
+        }
         adapter.notifyDataSetChanged();
     }
+
+    public static class AttendeeComparator implements Comparator<Attendee>
+    {
+        public int compare(Attendee c1, Attendee c2)
+        {
+            String name1=c1.name.toLowerCase();
+            String name2=c2.name.toLowerCase();
+            return name1.compareTo(name2);
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

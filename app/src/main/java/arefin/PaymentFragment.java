@@ -19,7 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,6 +52,16 @@ public class PaymentFragment extends Fragment
     myAdapter mAdapter;
 
     public PaymentFragment() { }
+
+    public void updatetoDB()
+    {
+        if(attendeeList==null)
+            return;
+        for(int i=0;i<attendeeList.size();i++)
+        {
+            AttendeeDB.update(attendeeList.get(i));
+        }
+    }
 
     public void addOrder(String name, double price)
     {
@@ -119,6 +129,7 @@ public class PaymentFragment extends Fragment
         final TextView paid_textView=(TextView)dialogView.findViewById(R.id.paid_textView);
         final Button amountCancel=(Button) dialogView.findViewById(R.id.amountCancel);
 
+        amountPaid.setHint(Double.toString(attendeeList.get(pos).paid));
         paid_textView.setText("Total Amount Paid By "+oldName);
         amountCancel.setOnClickListener(new View.OnClickListener()
         {
@@ -138,7 +149,8 @@ public class PaymentFragment extends Fragment
                     return;
                 }
                 double amount=Double.parseDouble(amountStr);
-                attendeeList.get(pos).paid+=amount;
+                attendeeList.get(pos).paid=amount;
+                AttendeeDB.update(attendeeList.get(pos));
                 mAdapter.notifyDataSetChanged();
                 //updateUsername(pos,userName);
                 dialog.dismiss();
@@ -157,6 +169,8 @@ public class PaymentFragment extends Fragment
             x=attendeeList.get(i).total;
             double totalVal=x+ (int) Math.round(x * val);
             attendeeList.get(i).total=totalVal;
+            AttendeeDB.update(attendeeList.get(i));
+
         }
         mAdapter.notifyDataSetChanged();
     }
@@ -244,11 +258,11 @@ class myAdapter extends BaseAdapter {
         TextView text = (TextView) vi.findViewById(R.id.username);
         text.setText(attendee.name);
         TextView paidText = (TextView) vi.findViewById(R.id.userPaid);
-        paidText.setText("Paid : "+Double.toString(attendee.paid));
+        paidText.setText("Paid : "+String.format( "%.2f", attendee.paid ));
         TextView dueText = (TextView) vi.findViewById(R.id.userDue);
-        dueText.setText("Due : "+Double.toString(due.get(position)));
+        dueText.setText("Due : "+String.format( "%.2f", due.get(position)));
         TextView totalText = (TextView) vi.findViewById(R.id.userTotal);
-        totalText.setText("Total : "+Double.toString(attendee.total));
+        totalText.setText("Total : "+String.format( "%.2f", attendee.total ));
         return vi;
     }
 }

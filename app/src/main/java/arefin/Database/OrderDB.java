@@ -32,8 +32,7 @@ public class OrderDB
                 + KEY_ORDER_EVENT_ID + " INTEGER, "
                 + KEY_ORDER_ATTENDEE_ID+" INTEGER , "
                 + KEY_ORDER_SERVED+" INTEGER, "
-                + KEY_ORDER_QUANTITY+" INTEGER, "
-                +"FOREIGN KEY("+KEY_ORDER_ATTENDEE_ID+") REFERENCES "+Attendee.TABLE+"("+AttendeeDB.KEY_ATTENDEE_ID+") ON UPDATE CASCADE ON DELETE CASCADE"
+                + KEY_ORDER_QUANTITY+" INTEGER "
                 +")";
         return CREATE_TABLE;
     }
@@ -107,8 +106,8 @@ public class OrderDB
                 KEY_ORDER_EVENT_ID + "," +
                 KEY_ORDER_ATTENDEE_ID + "," +
                 KEY_ORDER_SERVED + "," +
-                KEY_ORDER_QUANTITY +
-                " FROM " + Order.TABLE
+                KEY_ORDER_QUANTITY
+                +" FROM " + Order.TABLE
                 + " WHERE " +
                 KEY_ORDER_MENU_ID + "=?";// It's a good practice to use parameter ?, instead of concatenate string
 

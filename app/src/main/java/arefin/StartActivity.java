@@ -12,11 +12,12 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,6 +52,16 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
 
     public void onClickClearButton(View v)
     {
+        eventList=EventDB.getAllEvents();
+        records = new String[eventList.size()];
+        for (int i = 0; i < eventList.size(); i++) {
+            records[i] = eventList.get(i).name;
+        }
+        if(eventList.isEmpty() || eventList==null) {
+            Log.i("checkLog","Event List Empty");
+            Toast.makeText(getApplicationContext(), "You haven't created any events,yet", Toast.LENGTH_SHORT);
+            return;
+        }
         ListDialogFragment frag = new arefin.dialogs.fragment.ListDialogFragment();
         frag.createBuilder(getBaseContext(), getSupportFragmentManager())
                 .setTitle("Delete Old Event")
@@ -69,7 +80,16 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
     }
     public void onClickOldButton(View v){
         //Intent oldIntent = new Intent(StartActivity.this, AttendanceActivity.class);
-
+        eventList=EventDB.getAllEvents();
+        records = new String[eventList.size()];
+        for (int i = 0; i < eventList.size(); i++) {
+            records[i] = eventList.get(i).name;
+        }
+        if(eventList.isEmpty()|| eventList==null) {
+            Log.i("checkLog","Event List Empty");
+            Toast.makeText(getApplicationContext(), "You haven't created any events,yet", Toast.LENGTH_SHORT);
+            return;
+        }
         if(eventList.size()>1)
         {
             ListDialogFragment frag = new arefin.dialogs.fragment.ListDialogFragment();
@@ -82,8 +102,9 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
                     .show();
 
         }
-        else
+        else if(eventList.size()==1)
         {
+            app.currentEventID=eventList.get(0).serial;
             Intent oldIntent = new Intent(StartActivity.this, FragmentActivity.class);
             startActivity(oldIntent);
         }
@@ -104,7 +125,8 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
             for (int i : selectedPositions)
             {
                 String selected = eventList.get(i).name;
-                exportHistory();
+                //new SavedEvent(selected);
+                //exportHistory(selected);
                 EventDB.deleteByName(selected);
             }
         eventList=EventDB.getAllEvents();
@@ -114,10 +136,10 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
         }
     }
 
-    private void exportHistory()
+    private void exportHistory(String eventName)
     {
         Log.i("checkLog","File Writing began");
-        String name= eventList.get(0).name;
+        String name=eventName;
         String date= new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         // Create Folder
         String folder_main = getBaseContext().getString(R.string.app_name);
@@ -137,7 +159,7 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
         {
             FileWriter fw = new FileWriter(myFile);
             PrintWriter pw = new PrintWriter(fw);
-            SavedEvent savedEvent =new SavedEvent(getBaseContext());
+            SavedEvent savedEvent =new SavedEvent(eventName);
             pw.println(savedEvent.toString());
 
             pw.close();
@@ -145,9 +167,8 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
             Toast.makeText(getBaseContext(), "Records of Event " + name + " exported to SD Card",
                     Toast.LENGTH_LONG).show();
         }
-        catch (Exception e)
-        {
-            Log.i("checkLog", e.toString()+ " "+getClass().getName());
+         catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

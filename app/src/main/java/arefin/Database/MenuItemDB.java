@@ -31,6 +31,7 @@ public class MenuItemDB {
         return CREATE_TABLE;
     }
 
+
     public static void deleteItembyID(int ID) {
 
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
@@ -47,6 +48,21 @@ public class MenuItemDB {
         DatabaseManager.getInstance().closeDatabase();  // Closing database connection
     }
 
+    public static void update(MenuItem menuItem)
+    {
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_MENU_EVENT_ID,menuItem.eventID);
+        contentValues.put(KEY_MENU_DESCRIPTION, menuItem.description);
+        contentValues.put(KEY_MENU_PRICE, menuItem.price);
+        contentValues.put(KEY_MENU_ID,menuItem.serial);
+
+        // It's a good practice to use parameter ?, instead of concatenate string
+        db.update(MenuItem.TABLE, contentValues, KEY_MENU_ID + "= ?", new String[] { String.valueOf(menuItem.serial) });
+
+        Log.d(LOG_TAG,"MenuItem updated "+menuItem.toString());
+        DatabaseManager.getInstance().closeDatabase(); // Closing database connection
+    }
     public static int insertMenu(MenuItem menuItem) {
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         ContentValues contentValues = new ContentValues();

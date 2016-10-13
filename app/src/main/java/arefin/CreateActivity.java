@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 
 import java.sql.Timestamp;
 
@@ -24,7 +24,7 @@ import arefin.Database.EventDB;
 /*
 cd A:/Android_SDK/platform-tools/
 adb shell
-cd /data/data/com.batfia.arefin.MenuAssistant/shared_prefs
+cd /data/data/com.batfia.arefin.ManagerX/shared_prefs
 cat EventRecords.xml
 */
 

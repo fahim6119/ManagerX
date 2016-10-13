@@ -12,10 +12,16 @@
                 android:id="@+id/nav_members"
                 android:icon="@drawable/group"
                 android:title="Attendees" />
+
             <item
                 android:id="@+id/nav_items"
                 android:icon="@drawable/ic_restaurant"
-                android:title="Menu Items" />
+                android:title="Edit Menu Items" />
+
+            <item
+                android:id="@+id/nav_menu"
+                android:icon="@drawable/ic_restaurant"
+                android:title="Add Menu Item" />
 
             <item
                 android:id="@+id/nav_order"
@@ -24,6 +30,8 @@
 
         </menu>
     </item>
+
+
 
     <group android:checkableBehavior="single">
         <item

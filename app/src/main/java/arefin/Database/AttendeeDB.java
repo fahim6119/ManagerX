@@ -56,6 +56,8 @@ public class AttendeeDB
     public static void deleteByName(int eventID,String attendeeName) {
 
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        Attendee attendee=getAttendeeByName(eventID,attendeeName);
+        OrderDB.deleteOrderbyAttendee(attendee.serial);
         // It's a good practice to use parameter ?, instead of concatenate string
         db.delete(Attendee.TABLE, KEY_ATTENDEE_NAME + "= ? AND "+KEY_ATTENDEE_EVENT_ID + " = ?", new String[] { String.valueOf(attendeeName),String.valueOf(eventID) });
         DatabaseManager.getInstance().closeDatabase();  // Closing database connection
@@ -64,6 +66,7 @@ public class AttendeeDB
     public static void deletebyID(int ID) {
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         // It's a good practice to use parameter ?, instead of concatenate string
+        OrderDB.deleteOrderbyAttendee(ID);
         db.delete(Attendee.TABLE, KEY_ATTENDEE_ID + "= ?", new String[] { String.valueOf(ID) });
         DatabaseManager.getInstance().closeDatabase();  // Closing database connection
     }
@@ -71,6 +74,13 @@ public class AttendeeDB
     public static void deletebyEvent(int eventID) {
 
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+
+        ArrayList<Attendee> attendees=getAttendeesByEvent(eventID);
+        for(int i=0;i<attendees.size();i++)
+        {
+            OrderDB.deleteOrderbyAttendee(attendees.get(i).serial);
+        }
+
         // It's a good practice to use parameter ?, instead of concatenate string
         db.delete(Attendee.TABLE, KEY_ATTENDEE_EVENT_ID + "= ?", new String[] { String.valueOf(eventID) });
         DatabaseManager.getInstance().closeDatabase();  // Closing database connection
@@ -118,7 +128,7 @@ public class AttendeeDB
 
         Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(ID) } );
 
-        Attendee attendee=null;
+        Attendee attendee=new Attendee();
         // looping through all rows and adding to list
 
         if (cursor.moveToFirst()) {

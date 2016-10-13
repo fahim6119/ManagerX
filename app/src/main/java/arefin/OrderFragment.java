@@ -26,7 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 
 import arefin.Database.Attendee;
 import arefin.Database.AttendeeDB;
@@ -85,7 +85,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         for(int i=0;i<orderList.size();i++)
         {
             int userID=orderList.get(i).attendeeID;
-            listOrders.add(AttendeeDB.getAttendeeByID(userID).name);
+            String name=AttendeeDB.getAttendeeByID(userID).name;
+            listOrders.add(name);
         }
         orders = new String[listOrders.size()];
         listOrders.toArray(orders);
@@ -168,6 +169,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
     public void backUpSelected()
     {
+        if(listView==null)
+            return;
         SparseBooleanArray checked = listView.getCheckedItemPositions();
         int size = checked.size(); // number of name-value pairs in the array
         for (int i = 0; i < size; i++) {

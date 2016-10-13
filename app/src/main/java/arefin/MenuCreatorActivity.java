@@ -3,6 +3,7 @@ package arefin;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.v4.app.*;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -13,13 +14,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 
 import java.util.ArrayList;
 
+import arefin.Database.Attendee;
+import arefin.Database.AttendeeDB;
 import arefin.Database.Event;
 import arefin.Database.MenuItem;
 import arefin.Database.MenuItemDB;
+import arefin.Database.OrderDB;
 
 public class MenuCreatorActivity extends AppCompatActivity {
     int eventID;
@@ -29,19 +33,25 @@ public class MenuCreatorActivity extends AppCompatActivity {
     LinearLayout descLayout,priceLayout;
     EditText[] price,description;
 
+    int mode=0;
     int itemNum;
     double[] priceList;
     String[] descList;
+
+    ArrayList<MenuItem> menuItemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_creator);
 
+        if(getIntent().hasExtra("Mode"))
+            mode=getIntent().getIntExtra("Mode",0);
+        Log.i("checkLog","Mode is "+mode);
         eventID=app.currentEventID;
         getSupportActionBar().setTitle("Menu Items");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        itemNum-=0;
+        itemNum=0;
         itemNumText=(EditText) findViewById(R.id.itemNumText);
         itemNumButton=(Button) findViewById(R.id.ItemNumButton);
 
@@ -59,7 +69,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
     //retrieve Menu if already saved
     public void retrieve_sharedArray()
     {
-        ArrayList<MenuItem> menuItemList= MenuItemDB.getItemsByEvent(eventID);
+        menuItemList= MenuItemDB.getItemsByEvent(eventID);
         itemNum = menuItemList.size();
         descList = new String[itemNum];
         priceList=new double[itemNum];
@@ -68,7 +78,14 @@ public class MenuCreatorActivity extends AppCompatActivity {
             descList[i] = menuItemList.get(i).description;
             priceList[i] = menuItemList.get(i).price;
         }
-        itemNumText.setText(Integer.toString(itemNum));
+        if(mode==1)
+        {
+            itemNumText.setFocusable(false);
+            itemNumButton.setVisibility(View.INVISIBLE);
+            getSupportActionBar().setTitle("Editing "+itemNum+" Menu Items");
+        }
+        if(itemNum!=0)
+            itemNumText.setText(Integer.toString(itemNum));
         if(viewGenerator()) {
             addMenuBtn.setVisibility(View.VISIBLE);
             for (int l = 0; l < itemNum; l++) {
@@ -100,7 +117,7 @@ public class MenuCreatorActivity extends AppCompatActivity {
             price[l].setTextSize(15);
             price[l].setLayoutParams(lp);
             price[l].setId(l);
-            price[l].setInputType(InputType.TYPE_CLASS_NUMBER );
+            price[l].setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
             price[l].setHint("Price of Item " +(l + 1) );
             priceLayout.addView(price[l]);
         }
@@ -110,56 +127,95 @@ public class MenuCreatorActivity extends AppCompatActivity {
     public void menuItemSelected(View v){
 
         addMenuBtn.setVisibility(View.VISIBLE);
-        String text=itemNumText.getText().toString();
+        String text=itemNumText.getText().toString().trim();
         if(text.isEmpty()==false)
         {
             int oldNum=itemNum;
-            itemNum = Integer.parseInt(text);
+            try {
+                itemNum = Integer.parseInt(text);
+            }
+            catch (NumberFormatException e)
+            {
+                itemNumText.setError("Invalid Number");
+                return;
+            }
             viewGenerator();
             if(oldNum<=itemNum)
             {
                 for (int l = 0; l < oldNum; l++) {
                     description[l].setText(descList[l]);
+                    description[l].setFocusable(false);
+                    description[l].setFocusableInTouchMode(true);
                     price[l].setText(String.format( "%.2f", priceList[l] ));
+                    price[l].setFocusable(false);
+                    price[l].setFocusableInTouchMode(true);
                 }
             }
         }
     }
 
-    public void onClickNextButton(View v)
-    {
-        priceList=new double[itemNum];
-        String priceTemp,descTemp;
-        for(int l=0; l<itemNum; l++) {
-            priceTemp=price[l].getText().toString();
-            if(TextUtils.isEmpty(priceTemp))
-            {
+    public void onClickNextButton(View v) {
+        priceList = new double[itemNum];
+        String priceTemp, descTemp;
+        for (int l = 0; l < itemNum; l++) {
+            priceTemp = price[l].getText().toString().trim();
+            if (TextUtils.isEmpty(priceTemp)) {
                 price[l].setError("Please enter the price");
                 return;
+            } else {
+                try {
+                    priceList[l] = Double.parseDouble(priceTemp);
+                }
+                catch (NumberFormatException e)
+                {
+                    price[l].setError("Invalid price");
+                    return;
+                }
             }
-            else
-                priceList[l]=Integer.parseInt(priceTemp);
-            Log.i("checkLog","item "+l +" : price "+priceList[l]);
+            Log.i("checkLog", "item " + l + " : price " + priceList[l]);
         }
 
-        descList=new String[itemNum];
-        for(int l=0; l<itemNum; l++) {
-            descTemp=description[l].getText().toString();
-            if(TextUtils.isEmpty(descTemp))
-            {
+        descList = new String[itemNum];
+        for (int l = 0; l < itemNum; l++) {
+            descTemp = description[l].getText().toString();
+            if (TextUtils.isEmpty(descTemp)) {
                 description[l].setError("Please enter the details");
                 return;
+            } else
+                descList[l] = descTemp;
+            Log.i("checkLog", "item " + l + " : Description " + descList[l]);
+        }
+        if (mode == 1) {
+            menuItemList = MenuItemDB.getItemsByEvent(eventID);
+            for (int i = 0; i < menuItemList.size(); i++) {
+                MenuItem menuItem = menuItemList.get(i);
+                menuItem.description = descList[i];
+                menuItem.price = priceList[i];
+                MenuItemDB.update(menuItem);
             }
-            else
-            descList[l]= descTemp;
-            Log.i("checkLog","item "+l +" : Description "+descList[l]);
+            Intent createIntent = new Intent(MenuCreatorActivity.this, FragmentActivity.class);
+            startActivity(createIntent);
         }
-        for(int i=0;i<itemNum;i++)
+        else
         {
-            MenuItem menuItem=new MenuItem(eventID,descList[i],priceList[i]);
-            MenuItemDB.insertMenu(menuItem);
+            if (mode == 2)
+            {
+                MenuItemDB.deleteItembyEvent(eventID);
+                OrderDB.deleteOrderbyEvent(eventID);
+                ArrayList<Attendee> attendees= AttendeeDB.getAttendeesByEvent(eventID);
+                for(int i=0;i<attendees.size();i++)
+                {
+                    attendees.get(i).total=0;
+                    AttendeeDB.update(attendees.get(i));
+                }
+            }
+            for (int i = 0; i < itemNum; i++) {
+                MenuItem menuItem = new MenuItem(eventID, descList[i], priceList[i]);
+                MenuItemDB.insertMenu(menuItem);
+            }
+            Intent createIntent = new Intent(MenuCreatorActivity.this, ItemListActivity.class);
+            startActivity(createIntent);
         }
-        Intent createIntent = new Intent(MenuCreatorActivity.this, ItemListActivity.class);
-        startActivity(createIntent);
+
     }
 }

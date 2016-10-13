@@ -8,7 +8,7 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.DatePicker;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 import arefin.dialogs.core.BaseDialogBuilder;
 import arefin.dialogs.core.BaseDialogFragment;
 import arefin.dialogs.iface.IDateDialogListener;

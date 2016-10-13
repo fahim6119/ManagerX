@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
-import com.batfia.arefin.MenuAssistant.R;
+import com.batfia.arefin.ManagerX.R;
 import arefin.dialogs.core.BaseDialogBuilder;
 import arefin.dialogs.core.BaseDialogFragment;
 import arefin.dialogs.iface.IListDialogListener;

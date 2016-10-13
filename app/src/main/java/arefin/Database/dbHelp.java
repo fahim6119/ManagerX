@@ -9,7 +9,7 @@ import android.util.Log;
 import arefin.app;
 
 public class dbHelp extends SQLiteOpenHelper{
-    public static final String db_name = "MenuAssistant.db";
+    public static final String db_name = "ManagerX.db";
     final static String LOG_TAG = "AREFIN";
 
     private static final int db_version = 1;
@@ -32,6 +32,7 @@ public class dbHelp extends SQLiteOpenHelper{
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             Log.i(LOG_TAG,"Exception while creating DB");
         }
         Log.i(LOG_TAG,"Created DB");
