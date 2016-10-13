@@ -34,6 +34,7 @@ import java.util.Set;
 
 import arefin.Database.Attendee;
 import arefin.Database.AttendeeDB;
+import arefin.Database.SuggestionActivity;
 import arefin.dialogs.fragment.ListDialogFragment;
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;
 
@@ -246,6 +247,12 @@ public class AttendanceActivity extends AppCompatActivity implements
             finish();
         }
 
+        else if(id==R.id.action_add_suggestions)
+        {
+            Intent oldIntent = new Intent(AttendanceActivity.this, SuggestionActivity.class);
+            startActivity(oldIntent);
+            finish();
+        }
         else if (id == R.id.action_add)
         {
             getAttendance();

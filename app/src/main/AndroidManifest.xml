@@ -58,7 +58,16 @@
                 android:value="arefin.ItemListActivity" />
         </activity>
         <activity android:name="arefin.CreditsActivity" />
-        <activity android:name="arefin.HistoryActivity"></activity>
+        <activity android:name="arefin.HistoryActivity" />
+        <activity
+            android:name="arefin.Database.SuggestionActivity"
+            android:label="@string/title_activity_suggestion"
+            android:parentActivityName="arefin.AttendanceActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="arefin.AttendanceActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -29,7 +29,7 @@
         android:layout_toStartOf="@+id/imageButtonRemove" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:text="Ordered By "
         android:id="@+id/frag_detail_view"
         android:gravity="center_vertical|center_horizontal"

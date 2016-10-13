@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 /**
  * Created by Arefin on 12-Oct-16.
@@ -187,7 +188,7 @@ public class AttendeeDB
     }
 
 
-    public static ArrayList<String> getAllAttendees()
+    public static LinkedHashSet<String> getAllAttendees()
     {
         //Open connection to read only
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
@@ -196,7 +197,7 @@ public class AttendeeDB
                 " FROM " + Attendee.TABLE;
 
         //Student student = new Student();
-        ArrayList<String> attendeeList = new ArrayList<String>();
+        LinkedHashSet<String> attendeeList = new LinkedHashSet<>();
 
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list

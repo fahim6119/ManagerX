@@ -28,6 +28,7 @@ import java.util.Set;
 
 import arefin.Database.Event;
 import arefin.Database.EventDB;
+import arefin.Database.SuggestionActivity;
 import arefin.dialogs.fragment.ListDialogFragment;
 import arefin.dialogs.iface.IListDialogListener;
 import arefin.dialogs.iface.IMultiChoiceListDialogListener;
@@ -43,6 +44,7 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
        // SavedEvent savedEvent = new SavedEvent(getBaseContext());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
         eventList=EventDB.getAllEvents();
         records = new String[eventList.size()];
         for (int i = 0; i < eventList.size(); i++) {

@@ -92,7 +92,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         listOrders.toArray(orders);
         Log.i("checkLog","for fragment "+frag_id+" orders "+orderList.size());
         fragment_detail = (TextView) rootView.findViewById(R.id.frag_detail_view);
-        fragment_detail.setText("Ordered By " + orders.length + ", Price " + priceList[frag_id]);
+        fragment_detail.setText(descList[frag_id]+"(" + orders.length + "), Price " + priceList[frag_id]);
         listView = (ListView) rootView.findViewById(R.id.listView);
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_multiple_choice, listOrders);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -220,7 +220,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         ListDialogFragment frag=new arefin.dialogs.fragment.ListDialogFragment();
         int code=frag_id*10 +1 ; //1 for add
         frag.createBuilder(getActivity().getBaseContext(), getActivity().getSupportFragmentManager())
-                .setTitle("Add orders for Item "+(frag_id+1))
+                .setTitle("Add orders for "+descList[frag_id])
                 .setItems(newUsers)
                 .setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE)
                 .setRequestCode(code)
@@ -251,7 +251,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         int code=frag_id*10 +2 ; //2 for remove
 
         frag.createBuilder(getActivity().getBaseContext(), getActivity().getSupportFragmentManager())
-                .setTitle("Remove orders for Item "+(frag_id+1))
+                .setTitle("Remove orders for "+descList[frag_id])
                 .setItems(orders)
                 .setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE)
                 .setRequestCode(code)

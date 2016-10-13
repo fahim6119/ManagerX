@@ -20,6 +20,9 @@ import java.sql.Timestamp;
 
 import arefin.Database.Event;
 import arefin.Database.EventDB;
+import arefin.Database.SuggestionActivity;
+import arefin.dialogs.fragment.SimpleDialogFragment;
+import arefin.dialogs.iface.ISimpleDialogListener;
 
 /*
 cd A:/Android_SDK/platform-tools/
@@ -29,7 +32,7 @@ cat EventRecords.xml
 */
 
 
-public class CreateActivity extends AppCompatActivity {
+public class CreateActivity extends AppCompatActivity implements ISimpleDialogListener {
 
     int amount;
     String name,place;
@@ -63,13 +66,40 @@ public class CreateActivity extends AppCompatActivity {
                 event_no= EventDB.insertEvent(event);
                 event.serial=event_no;
                 app.currentEventID=event_no;
-                Intent createIntent = new Intent(CreateActivity.this, AttendanceActivity.class);
-                startActivity(createIntent);
-                finish();
+                createPrompt();
             }
         });
     }
 
+    public void createPrompt()
+    {
+        SimpleDialogFragment.createBuilder(this,
+                getSupportFragmentManager()).setTitle("Suggestion!")
+                .setMessage("Do you want to add attendees from previous events?")
+                .setPositiveButtonText("Yes")
+                .setNegativeButtonText("No")
+                .setCancelable(false)
+                .show();
+
+    }
 
 
+    @Override
+    public void onNegativeButtonClicked(int requestCode) {
+        Intent oldIntent = new Intent(CreateActivity.this, AttendanceActivity.class);
+        startActivity(oldIntent);
+        finish();
+    }
+
+    @Override
+    public void onNeutralButtonClicked(int requestCode) {
+
+    }
+
+    @Override
+    public void onPositiveButtonClicked(int requestCode) {
+        Intent oldIntent = new Intent(CreateActivity.this, SuggestionActivity.class);
+        startActivity(oldIntent);
+        finish();
+    }
 }

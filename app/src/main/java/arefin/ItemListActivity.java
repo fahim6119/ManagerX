@@ -101,7 +101,7 @@ public class ItemListActivity extends AppCompatActivity implements
             menuItems[l].setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.button_main));
 
             menuItems[l].setWidth(0);
-            menuItems[l].setText("Item " +(l + 1)+" Price "+priceList[l] );
+            menuItems[l].setText(descList[l]+", Price "+priceList[l] );
             menuItems[l].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -111,7 +111,7 @@ public class ItemListActivity extends AppCompatActivity implements
                     if(firstTimeStartup[id]==true) {
 
                         frag.createBuilder(getBaseContext(), getSupportFragmentManager())
-                                .setTitle("Menu "+(id+1)+" Ordered by ")
+                                .setTitle(descList[id]+" Ordered by ")
                                 .setItems(users)
                                 .setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE)
                                 .setRequestCode(id)
@@ -120,7 +120,7 @@ public class ItemListActivity extends AppCompatActivity implements
                     else
                     {
                         frag.createBuilder(getBaseContext(), getSupportFragmentManager())
-                                .setTitle("Menu "+(id+1)+" Ordered by ")
+                                .setTitle(descList[id]+" Ordered by ")
                                 .setItems(users)
                                 .setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE)
                                 .setCheckedItems(selected[id])
