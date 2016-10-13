@@ -44,9 +44,12 @@ Version 1.1 : 11:51 PM 13-Oct-16
 - Suggestions of Attendees from past events
 
 Version 1.2 : 2:06 AM 14-Oct-16
-- Reset/Update Menu from Navigation Drawer
+- Reset Menu from Navigation Drawer (Reset all the previous orders also)
 - Edit/ Remove Menu Items from Order Fragments
  
+Version 1.21 : 3:18 AM 14-Oct-16
+- Add new Menu Item from Order Fragments
+
 Unimplemented Features :
 - Share APK
 

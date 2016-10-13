@@ -54,7 +54,7 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
         }
         if(eventList.isEmpty() || eventList==null) {
             Log.i("checkLog","Event List Empty");
-            Toast.makeText(getApplicationContext(), "You haven't created any events,yet", Toast.LENGTH_SHORT);
+            Toast.makeText(StartActivity.this, "You haven't created any events,yet", Toast.LENGTH_SHORT);
             return;
         }
         ListDialogFragment frag = new arefin.dialogs.fragment.ListDialogFragment();
@@ -82,7 +82,7 @@ public class StartActivity extends AppCompatActivity implements IListDialogListe
         }
         if(eventList.isEmpty()|| eventList==null) {
             Log.i("checkLog","Event List Empty");
-            Toast.makeText(getApplicationContext(), "You haven't created any events,yet", Toast.LENGTH_SHORT);
+            Toast.makeText(StartActivity.this, "You haven't created any events,yet", Toast.LENGTH_SHORT);
             return;
         }
         if(eventList.size()>1)

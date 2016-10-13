@@ -88,6 +88,56 @@ public class MenuEditActivity extends AppCompatActivity
         finish();
     }
 
+    public void addItem(View v)
+    {
+        createItem();
+    }
+
+    private void createItem()
+    {
+        TextView dialog_msg;
+        final EditText dialog_name, dialog_price;
+        Button set;
+
+        final Dialog dialog = new Dialog(MenuEditActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_menuitem);
+        dialog_msg = (TextView) dialog.findViewById(R.id.dialog_message);
+        dialog_name = (EditText) dialog.findViewById(R.id.dialog_name);
+        dialog_price = (EditText) dialog.findViewById(R.id.dialog_price);
+        set = (Button) dialog.findViewById(R.id.btn_set);
+        set.setText("ADD");
+        dialog_msg.setText("Add New Item");
+
+        set.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = dialog_name.getText().toString();
+                if (name.isEmpty())
+                    return;
+                Double price;
+                String priceStr = dialog_price.getText().toString().trim();
+                try {
+                    price =Double.parseDouble(priceStr);
+                }
+                catch (NumberFormatException e)
+                {
+                    dialog_price.setError("Invalid Price");
+                    return;
+                }
+                MenuItem tempItem=new MenuItem(eventID,name,price);
+                int serial=MenuItemDB.insertMenu(tempItem);
+                tempItem.serial=serial;
+                menuItems.add(tempItem);
+                baseAdapter.notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+
     private void editItem(final int position)
     {
         MenuItem menuItem=menuItems.get(position);
@@ -102,6 +152,8 @@ public class MenuEditActivity extends AppCompatActivity
         dialog_name = (EditText) dialog.findViewById(R.id.dialog_name);
         dialog_price = (EditText) dialog.findViewById(R.id.dialog_price);
         set = (Button) dialog.findViewById(R.id.btn_set);
+
+        dialog_msg.setText("Edit Item");
 
         dialog_name.setText(menuItem.description);
         dialog_price.setText(String.format( "%.2f", menuItem.price));
@@ -179,7 +231,7 @@ public class MenuEditActivity extends AppCompatActivity
             {
                 int attendeeID=orders.get(i).attendeeID;
                 Attendee attendee=AttendeeDB.getAttendeeByID(attendeeID);
-                attendee.total-=menuItem.price;
+                attendee.total=0;
                 AttendeeDB.update(attendee);
             }
 

@@ -47,7 +47,7 @@ public class ItemListActivity extends AppCompatActivity implements
 
         retrieve_sharedArray();
 
-        selected=new int[itemNum][attendeeList.size()];
+        selected=new int[itemNum][100];
         firstTimeStartup=new boolean[itemNum];
         attendeeList= AttendeeDB.getAttendeesByEvent(eventID);
         users=new String[attendeeList.size()];
