@@ -180,6 +180,7 @@ public class PaymentFragment extends Fragment
         attendeeList= AttendeeDB.getAttendeesByEvent(eventID);
         for(int i=0;i<attendeeList.size();i++)
         {
+            attendeeList.get(i).total=0;
             userlist.add(attendeeList.get(i).name);
         }
         //Update Paid and total

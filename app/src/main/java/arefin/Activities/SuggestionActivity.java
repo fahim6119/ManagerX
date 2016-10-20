@@ -77,7 +77,7 @@ public class SuggestionActivity extends AppCompatActivity
                 currentButton.setText(baseList.get(btnCount));
                 currentButton.setTextOn(baseList.get(btnCount));
                 currentButton.setTextOff(baseList.get(btnCount));
-                currentButton.setTextColor(getResources().getColor(R.color.mainText));
+                currentButton.setTextColor(getResources().getColor(android.R.color.white));
 
                 currentButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
